@@ -23,6 +23,7 @@ available in my standalone project [ESP32CompositeColorVideo].
 
 ## License (esp32-dali-clock)
 
+```
 DaliClock by (c) 2021 Marcio Teixeira
 
 This program is free software: you can redistribute it and/or modify
@@ -37,9 +38,11 @@ GNU General Public License for more details.
 
 To view a copy of the GNU General Public License, go to the following
 location: <http://www.gnu.org/licenses/>.
+```
 
-## License (esp32-8-bit)
+## License ([esp_8_bit])
 
+```
 Copyright (c) 2020, Peter Barrett
 
 Permission to use, copy, modify, and/or distribute this software for
@@ -54,15 +57,16 @@ OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
 WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
 ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
+```
 
-## License (bitluni)
+## License ([ESP32CompositeVideo])
 
+```
 CC0. Do whatever you like with the code but I will be thankfull 
 if you attribute me. Keep the spirit alive :-)
 
 - bitluni
-
-# References:
+```
 
 [xdaliclock]: https://www.jwz.org/xdaliclock
 [arduino-dali-clock]: https://github.com/marciot/arduino-dali-clock

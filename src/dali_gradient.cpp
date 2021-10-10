@@ -16,6 +16,7 @@
  ****************************************************************************/
 
 #include <Arduino.h>
+#include "../dali_config.h"
 #include "gfx/CompositeGraphics.h"
 #include "dali_gradient.h"
 
@@ -26,9 +27,35 @@ uint8_t DaliGradient::gradient_color(int row, int h, char color1, char color2) {
             MIX(color1 & 0x0F, color2 & 0x0F);
 }
 
+char add_luminance(char color, char luminance) {
+    const char sum = (color & 0x0F) + luminance;
+    return color & 0xF0 | (sum < 0x0F ? sum : 0x0F);
+}
+
+// Replaces mask_color with a gradient from color1 to color2
 void DaliGradient::draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color) {
     for(int j = y; j < y + h; j++)
         for(int i = x; i < x + w; i++)
             if(g.get(i, j) == mask_color)
                 g.dotFast(i, j, gradient_color(j - y, h, color1, color2));
+}
+
+// Replaces mask_color with a gradient from color1 to color2
+// If shine > 0, draw a diagonal highlight across the gradient
+void DaliGradient::draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color, int shine) {
+    const bool do_shine = shine > 0;
+    for(int j = y; j < y + h; j++) {
+        for(int i = x; i < x + w; i++) {
+            if(g.get(i, j) == mask_color) {
+                char color = gradient_color(j - y, h, color1, color2);
+                if (do_shine) {
+                    const char glow = shine_intensity - min(shine_intensity, abs(shine - i));
+                    if(glow)
+                        color = add_luminance(color, glow);
+                }
+                g.dotFast(i, j, color);
+            }
+        }
+        if(do_shine && j&1) shine--;
+    }
 }

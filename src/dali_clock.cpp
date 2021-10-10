@@ -63,20 +63,17 @@ void DaliClock::get_time(uint8_t &hours, uint8_t &minutes, uint8_t &seconds) con
 #define COLON_2_POS left_margin + digit_width * 4 + colon_width * 1, top_margin
 #define DIGIT_5_POS left_margin + digit_width * 4 + colon_width * 2, top_margin
 #define DIGIT_6_POS left_margin + digit_width * 5 + colon_width * 2, top_margin
+#define CLOCK_RECT  left_margin, top_margin, clock_width, digit_height
 
-inline uint8_t DaliClock::gradient_color(int y) {
-    return DaliGradient::gradient_color(y - top_margin, digit_height, digit_gradient_top, digit_gradient_bottom);
-}
+constexpr char digit_mask_color = 0x0F; // Draw digits in this color, then overlay gradient
 
 void DaliClock::draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y, char color) {
-    while(digit.draw_row(g, x, y, color ? color : gradient_color(y))) y++;
+    while(digit.draw_row(g, x, y, color)) y++;
 }
 
 void DaliClock::draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y) {
-    // Draw the shadow
-    draw_digit(g, digit, x + 2, y + 2, digit_shadow_color);
-    // Draw the digit
-    draw_digit(g, digit, x, y, 0);
+    draw_digit(g, digit, x + 2, y + 2, digit_shadow_color); // Draw the shadow
+    draw_digit(g, digit, x    , y    , digit_mask_color); // Draw the digit
 }
 
 void DaliClock::draw_morphed_digit(CompositeGraphics &g, const float digits[6], const uint8_t digit_limit[6]) {
@@ -100,6 +97,10 @@ void DaliClock::draw_morphed_digit(CompositeGraphics &g, const uint8_t d1[6], co
 void DaliClock::draw_morphed_separator(CompositeGraphics &g, uint8_t blend) {
     draw_digit(g, DaliDigit(DaliDigit::COLON, DaliDigit::DASH, blend), COLON_1_POS);
     draw_digit(g, DaliDigit(DaliDigit::COLON, DaliDigit::DASH, blend), COLON_2_POS);
+}
+
+void DaliClock::draw_gradient_and_shine(CompositeGraphics &g, float i) {
+    DaliGradient::draw(g, CLOCK_RECT, digit_gradient_top, digit_gradient_bottom, digit_mask_color, (display_width + digit_height) * i);
 }
 
 void DaliClock::draw(CompositeGraphics &g) {

@@ -20,5 +20,6 @@
 class DaliGradient {
     public:
         static uint8_t gradient_color(int row, int h, char color1, char color2);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color = 0x0F);
+        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color);
+        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color, int shine);
 };

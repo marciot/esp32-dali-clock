@@ -31,7 +31,6 @@ class DaliClock {
 
         static void hms_to_morphed_digits(uint8_t hours, uint8_t minutes, float seconds, float digits[6]);
 
-        static uint8_t gradient_color(int y);
         static void draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y, char color);
         static void draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y);
 
@@ -54,6 +53,7 @@ class DaliClock {
         static void mdy_to_digits(uint8_t month, uint8_t day, uint8_t year, uint8_t digits[6]);
         static void mdy_to_digits(uint8_t month, uint8_t day, uint8_t year, float digits[6]);
         static void digits_to_mdy(const uint8_t digits[6], uint8_t &month, uint8_t &day, uint8_t &year);
+        static void draw_gradient_and_shine(CompositeGraphics &g, float f);
 
         void draw(CompositeGraphics &g);
         void set_time (uint8_t hours, uint8_t minutes, uint8_t seconds);

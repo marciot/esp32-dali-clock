@@ -28,7 +28,6 @@ struct dali_digit_t {
 
 class DaliDigit {
     private:
-        uint16_t _height;
         uint16_t _row;
         uint8_t _linestride;
         uint8_t _blend;
@@ -43,6 +42,7 @@ class DaliDigit {
         void init(const dali_digit_t &d1, const dali_digit_t &d2, uint8_t blend);
         void init(uint8_t d1, uint8_t d2, uint8_t blend);
     public:
+        uint16_t height, width;
         enum {
             COLON = 10,
             DASH  = 11

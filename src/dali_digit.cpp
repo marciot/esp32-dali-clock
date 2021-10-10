@@ -20,7 +20,8 @@
 #include "dali_digit.h"
 
 void DaliDigit::init(const dali_digit_t &d1, const dali_digit_t &d2, uint8_t blend) {
-    _height     = max(d1.height, d2.height);
+    height      = max(d1.height, d2.height);
+    width       = max(d1.width, d2.width);
     _linestride = max(d1.linestride, d2.linestride);
     _rle_1      = d1.packed_rle;
     _rle_2      = d2.packed_rle;
@@ -125,7 +126,7 @@ void DaliDigit::blend_rle(uint8_t start[4], uint8_t final[], uint8_t blend) {
 }
 
 bool DaliDigit::draw_row(CompositeGraphics &g, int x, int y, uint8_t color) {
-    if(_row++ == _height) return false;
+    if(_row++ == height) return false;
     uint8_t start[4], final[4];
     memcpy(start, _rle_1, 4); _rle_1 += 4;
     memcpy(final, _rle_2, 4); _rle_2 += 4;

@@ -80,8 +80,9 @@ void setup() {
 
 void draw() {
     const uint32_t ms = millis();
-    const float period_1s   = float(ms %  1000)  / 1000;
-    const float period_3s   = float(ms %   3000) / 1000;
+    const float period_1s  = float(ms %  1000) / 1000;
+    const float period_3s  = float(ms %  3000) / 1000;
+    const float period_7s  = float(ms %  7000) / 1000;
 
     //clearing background and starting to draw
     graphics.begin(0);
@@ -89,6 +90,7 @@ void draw() {
     info.draw(graphics);
     grid.draw(graphics, period_1s);
     dali.draw(graphics);
+    dali.draw_gradient_and_shine(graphics, period_7s);
 
     //finished drawing, swap back and front buffer to display it
     graphics.end();

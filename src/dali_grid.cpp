@@ -23,13 +23,14 @@
 
 constexpr int center_x = display_width/2;
 constexpr int center_y = display_height/2;
+constexpr char grid_mask_color = 0x0F; // Draw digits in this color, then overlay gradient
 
 void DaliGrid::draw(CompositeGraphics &g, float motion) {
     // Draw the horizon lines
     for(uint16_t p = 2; ; p++) {
         const int y = center_y + pow(2, motion + p);
         if(y > display_height) break;
-        g.line(0, y, display_width, y, 0x0F);
+        g.line(0, y, display_width, y, grid_mask_color);
     }
 
     // Draw the vanishing lines
@@ -38,10 +39,10 @@ void DaliGrid::draw(CompositeGraphics &g, float motion) {
         const int y1 = center_y;
         const int x2 = center_x + x;
         const int y2 = display_height;
-        g.line(x1  , y1, x2  , y2, 0x0F);
-        g.line(x1+1, y1, x2+1, y2, 0x0F);
+        g.line(x1  , y1, x2  , y2, grid_mask_color);
+        g.line(x1+1, y1, x2+1, y2, grid_mask_color);
     }
 
     // Draw the gradient
-    DaliGradient::draw(g, 0, center_y, display_width, display_height - center_y, floor_gradient_top, floor_gradient_bottom);
+    DaliGradient::draw(g, 0, center_y-1, display_width, display_height - center_y, floor_gradient_top, floor_gradient_bottom, grid_mask_color);
 }

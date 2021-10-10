@@ -43,9 +43,10 @@ constexpr int colon_width    = 25;
   constexpr char floor_gradient_bottom = 0x0f;
 #endif
 
+constexpr int shine_intensity = 10; // Between 1 and 16
+
 // Center the clock on the display
 
 constexpr int clock_width = digit_width * 6 + colon_width * 2;
-//constexpr int left_margin = (display_width - clock_width)/2;
+constexpr int left_margin = (display_width - clock_width)/2;
 constexpr int top_margin = (display_height - digit_height)/2;
-constexpr int left_margin = 0;
