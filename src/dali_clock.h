@@ -65,3 +65,5 @@ class DaliClock {
 
         void set_calender_mode(bool enable);
 };
+
+#define CLOCK_RECT  left_margin, top_margin, clock_width, digit_height

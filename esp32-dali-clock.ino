@@ -36,6 +36,7 @@
 #include "src/dali_digit.h"
 #include "src/dali_clock.h"
 #include "src/dali_grid.h"
+#include "src/dali_sparkle.h"
 #include "src/dali_status.h"
 
 //Graphics using the fixed resolution for the color graphics
@@ -48,6 +49,7 @@ Font<CompositeGraphics> font(6, 8, font6x8::pixels);
 DaliClock dali;
 DaliGrid grid;
 DaliStatus info;
+DaliSparkle sparkle[num_sparkles];
 
 WebServer server(80);
 DNSServer dnsServer;
@@ -80,9 +82,11 @@ void setup() {
 
 void draw() {
     const uint32_t ms = millis();
-    const float period_1s  = float(ms %  1000) / 1000;
-    const float period_3s  = float(ms %  3000) / 1000;
-    const float period_7s  = float(ms %  7000) / 1000;
+    #define PERIOD(LENGTH,PHASE) float(uint32_t(ms - PHASE * 1000) % uint32_t(LENGTH * 1000)) / 1000
+    const float period_1s   = PERIOD(1,0.0);
+    const float period_3s   = PERIOD(3,0.0);
+    const float period_7s   = PERIOD(7,0.0);
+    const float period_7s1p = PERIOD(7,0.5);
 
     //clearing background and starting to draw
     graphics.begin(0);
@@ -90,7 +94,13 @@ void draw() {
     info.draw(graphics);
     grid.draw(graphics, period_1s);
     dali.draw(graphics);
+    for(int i = 0; i < num_sparkles; i++) {
+        sparkle[i].locate(graphics, period_7s1p - i * sparkle_phase, CLOCK_RECT, 0x0F);
+    }
     dali.draw_gradient_and_shine(graphics, period_7s);
+    for(int i = 0; i < num_sparkles; i++) {
+        sparkle[i].draw(graphics, period_7s1p - i * sparkle_phase);
+    }
 
     //finished drawing, swap back and front buffer to display it
     graphics.end();

@@ -45,6 +45,11 @@ constexpr int colon_width    = 25;
 
 constexpr int shine_intensity = 10; // Between 1 and 16
 
+constexpr int num_sparkles = 3;
+constexpr float sparkle_duration = 0.5; // seconds
+constexpr float sparkle_phase = 0.4; // seconds
+constexpr int sparkle_size = 10;
+
 // Center the clock on the display
 
 constexpr int clock_width = digit_width * 6 + colon_width * 2;

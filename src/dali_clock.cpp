@@ -63,7 +63,6 @@ void DaliClock::get_time(uint8_t &hours, uint8_t &minutes, uint8_t &seconds) con
 #define COLON_2_POS left_margin + digit_width * 4 + colon_width * 1, top_margin
 #define DIGIT_5_POS left_margin + digit_width * 4 + colon_width * 2, top_margin
 #define DIGIT_6_POS left_margin + digit_width * 5 + colon_width * 2, top_margin
-#define CLOCK_RECT  left_margin, top_margin, clock_width, digit_height
 
 constexpr char digit_mask_color = 0x0F; // Draw digits in this color, then overlay gradient
 
