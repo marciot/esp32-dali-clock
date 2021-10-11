@@ -22,5 +22,5 @@
 #include "dali_horizon.h"
 
 void DaliHorizon::draw(CompositeGraphics &g) {
-    DaliGradient::draw(g, 0, horizon_y - horizon_depth, display_width, horizon_depth, horizon_gradient_top, horizon_gradient_bottom, 0x00);
+    DaliGradient::draw(g, 0, horizon_y - horizon_depth, display_width, horizon_depth, horizon_gradient_top, horizon_gradient_bottom, background_color);
 }

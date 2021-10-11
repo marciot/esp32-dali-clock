@@ -32,9 +32,9 @@ void DaliCity::draw(CompositeGraphics &g, int city_height, char lumi) {
         const int w = 6 + rand() % 6;
         const int gap = rand() % 6;
         const int h = rand() % city_height;
-        g.fillRect(x,horizon_y-horizon_depth-h,w,h,0x0F);
+        g.fillRect(x,horizon_y-horizon_depth-h,w,h,masking_color);
         x += w + gap;
     }
     // Draw the gradient
-    DaliGradient::draw(g, 0, horizon_y-horizon_depth-city_height, display_width, city_height, city_hue | lumi, city_hue, 0x0F);
+    DaliGradient::draw(g, 0, horizon_y-horizon_depth-city_height, display_width, city_height, city_hue | lumi, city_hue, masking_color);
 }

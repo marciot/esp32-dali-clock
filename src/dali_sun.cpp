@@ -31,8 +31,8 @@ void DaliSun::draw(CompositeGraphics &g) {
         const int dy = y-cy;
         const int dx = sqrt(r2 - dy*dy);
         if((dy>>1)&3)
-            g.line(cx - dx, y, cx + dx, y, 0x0F);
+            g.line(cx - dx, y, cx + dx, y, masking_color);
     }
     // Draw the gradient
-    DaliGradient::draw(g, cx - sun_radius, sun_top, cx + sun_radius, sun_bottom - sun_top, sun_gradient_top, sun_gradient_bottom, 0x0F);
+    DaliGradient::draw(g, cx - sun_radius, sun_top, sun_radius * 2, sun_bottom - sun_top, sun_gradient_top, sun_gradient_bottom, masking_color);
 }

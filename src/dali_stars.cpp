@@ -25,6 +25,7 @@ void DaliStars::draw(CompositeGraphics &g, float t) {
 }
     
 void DaliStars::draw(CompositeGraphics &g, float t, int x, int y, int w, int h) {
+    if(!draw_stars) return;
     srand(0);
     for(uint8_t i = 0; i < 100; i++) {
         const int _x = x + rand() % w;

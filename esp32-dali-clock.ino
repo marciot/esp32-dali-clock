@@ -99,7 +99,7 @@ void draw() {
     const float period_7s1p = PERIOD(7,0.5);
 
     //clearing background and starting to draw
-    graphics.begin(0);
+    graphics.begin(background_color);
 
     info.draw(graphics);
     grid.draw(graphics, period_1s);
