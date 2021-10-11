@@ -18,6 +18,9 @@
 #pragma once
 
 class DaliGradient {
+    private:
+        static uint8_t mix(uint8_t a, uint8_t b, float ratio);
+        static uint8_t mix_chroma(uint8_t a, uint8_t b, float ratio);
     public:
         static uint8_t gradient_color(int row, int h, uint8_t color1, uint8_t color2);
         static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color);

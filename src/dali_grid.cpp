@@ -18,6 +18,7 @@
 #include <Arduino.h>
 #include "gfx/CompositeGraphics.h"
 #include "../dali_config.h"
+#include "dali_color_theme.h"
 #include "dali_gradient.h"
 #include "dali_grid.h"
 

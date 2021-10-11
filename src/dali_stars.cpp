@@ -16,8 +16,9 @@
  ****************************************************************************/
 
 #include <Arduino.h>
-#include "../dali_config.h"
 #include "gfx/CompositeGraphics.h"
+#include "../dali_config.h"
+#include "dali_color_theme.h"
 #include "dali_stars.h"
 
 void DaliStars::draw(CompositeGraphics &g, float t) {

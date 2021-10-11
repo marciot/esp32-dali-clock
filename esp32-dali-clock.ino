@@ -35,6 +35,7 @@
 #include "src/gfx/font6x8.h"
 
 #include "dali_config.h"
+#include "src/dali_color_theme.h"
 #include "src/dali_digit.h"
 #include "src/dali_clock.h"
 #include "src/dali_grid.h"
@@ -109,15 +110,17 @@ void draw() {
     city.draw(graphics);
     dali.draw(graphics);
     for(int i = 0; i < num_sparkles; i++) {
-        sparkle[i].locate(graphics, period_7s1p - i * sparkle_phase, CLOCK_RECT, 0x0F);
+        //sparkle[i].locate(graphics, period_7s1p - i * sparkle_phase, CLOCK_RECT, 0x0F);
     }
     dali.draw_gradient_and_shine(graphics, period_7s);
     for(int i = 0; i < num_sparkles; i++) {
-        sparkle[i].draw(graphics, period_7s1p - i * sparkle_phase);
+        //sparkle[i].draw(graphics, period_7s1p - i * sparkle_phase);
     }
 
     //finished drawing, swap back and front buffer to display it
     graphics.end();
+    
+    DaliColorTheme::setTheme(float(millis() % 40000)/10000);
 }
 
 void loop() {

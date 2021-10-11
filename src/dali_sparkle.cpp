@@ -16,8 +16,9 @@
  ****************************************************************************/
 
 #include <Arduino.h>
-#include "../dali_config.h"
 #include "gfx/CompositeGraphics.h"
+#include "../dali_config.h"
+#include "dali_color_theme.h"
 #include "dali_sparkle.h"
 
 void DaliSparkle::locate(CompositeGraphics &g, float t, int x, int y, int w, int h, char mask_color) {
