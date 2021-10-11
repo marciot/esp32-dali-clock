@@ -21,6 +21,6 @@ class DaliSparkle {
     private:
         int _x, _y;
     public:
-        void locate(CompositeGraphics &g, float t, int x, int y, int w, int h, char mask_color);
+        void locate(CompositeGraphics &g, float t, int x, int y, int w, int h);
         void draw(CompositeGraphics &g, float t);
 };

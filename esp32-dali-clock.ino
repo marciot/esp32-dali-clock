@@ -110,17 +110,17 @@ void draw() {
     city.draw(graphics);
     dali.draw(graphics);
     for(int i = 0; i < num_sparkles; i++) {
-        //sparkle[i].locate(graphics, period_7s1p - i * sparkle_phase, CLOCK_RECT, 0x0F);
+        sparkle[i].locate(graphics, period_7s1p - i * sparkle_phase, CLOCK_RECT);
     }
     dali.draw_gradient_and_shine(graphics, period_7s);
     for(int i = 0; i < num_sparkles; i++) {
-        //sparkle[i].draw(graphics, period_7s1p - i * sparkle_phase);
+        sparkle[i].draw(graphics, period_7s1p - i * sparkle_phase);
     }
 
     //finished drawing, swap back and front buffer to display it
     graphics.end();
     
-    DaliColorTheme::setTheme(float(millis() % 40000)/10000);
+    DaliColorTheme::setTheme(float(millis() % 240000)/60000);
 }
 
 void loop() {

@@ -23,22 +23,32 @@ class DaliStatus {
         char color;
         uint32_t lastUpdate;
 
+        bool darkBackground() {return background_color & 0x0F < 8;}
+
         void fade() {
-            if(color && millis() - lastUpdate > 1000) {
+            if(millis() - lastUpdate > 1000) {
                 lastUpdate = millis();
-                color--;
+                if(darkBackground()) {
+                    if (color != 0x00) color--;
+                } else {
+                    if (color != 0x0F) color++;
+                }
             }
+        }
+        
+        void unfade() {
+            color = darkBackground() ? 0x0F : 0x00;
         }
     public:
         void set(String str) {
             message = str;
-            color = 0x0F;
+            unfade();
             lastUpdate = millis();
         }
         
         void append(String str) {
             message += str;
-            color = 0x0F;
+            unfade();
             lastUpdate = millis();
         }
 

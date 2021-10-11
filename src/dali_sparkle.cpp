@@ -21,15 +21,15 @@
 #include "dali_color_theme.h"
 #include "dali_sparkle.h"
 
-void DaliSparkle::locate(CompositeGraphics &g, float t, int x, int y, int w, int h, char mask_color) {
+void DaliSparkle::locate(CompositeGraphics &g, float t, int x, int y, int w, int h) {
     if(t > sparkle_duration) {
         do {
             // Random position
             _x = random(x, x+w);
             _y = random(y, y+h);
             // Find nearest edge
-            const bool onMask = g.get(_x,_y) == mask_color;
-            while(onMask == (g.get(_x,_y) == mask_color)) {
+            const bool onMask = g.get(_x,_y) == masking_color;
+            while(onMask == (g.get(_x,_y) == masking_color)) {
                 _x++;
                 if(_x == display_width) break;
             }
@@ -41,8 +41,10 @@ void DaliSparkle::draw(CompositeGraphics &g, float t) {
     if(t > 0 && t < sparkle_duration) {
         const int r = sparkle_size * sin(t/sparkle_duration*2*PI);
         // Vary the color and lengths of the diagonal and horizontal elements
-        const char c1 = _x&1 ? 0x0F : 0x09;
-        const char c2 = _x&1 ? 0x09 : 0x0F;
+        const char dark = (background_color & 0x0F) < 8 ? 0x0F : 0x00;
+        const char gray = (background_color & 0x0F) < 8 ? 0x09 : 0x06;
+        const char c1 = _x&1 ? dark : gray;
+        const char c2 = _x&1 ? gray : dark;
         const int  r1 = _y&1 ? r    : r/2;
         const int  r2 = _y&1 ? r/2  : r;
         const bool h_1st = _y&2;
