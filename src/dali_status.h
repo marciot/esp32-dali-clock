@@ -47,7 +47,7 @@ class DaliStatus {
                 //setting text color, transparent background
                 g.setTextColor(color);
                 //text starting position
-                g.setCursor(30, 20);
+                g.setCursor(30, 15);
                 //printing some lines of text
                 g.print(message.c_str());
                 fade();

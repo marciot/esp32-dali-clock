@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -15,43 +15,46 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
-//#define BLACK_AND_WHITE
-
 // Display size and digit sizes
 // The display size is fixed by the Composite video code and the digit sizes
 // correspond to the font file.
 
-constexpr int display_width  = 336;
-constexpr int display_height = 240;
-constexpr int digit_width    = 45;
-constexpr int digit_height   = 64;
-constexpr int colon_width    = 25;
+constexpr int   display_width            = 336;
+constexpr int   display_height           = 240;
+constexpr int   digit_width              = 45;
+constexpr int   digit_height             = 64;
+constexpr int   colon_width              = 25;
+                
+// Colors       
+constexpr int   digit_top                = 30;
+constexpr char  digit_gradient_top       = 0x90;
+constexpr char  digit_gradient_midtop    = 0xac;
+constexpr char  digit_gradient_midbot    = 0x20;
+constexpr char  digit_gradient_bottom    = 0x6d;
+constexpr char  digit_shadow_color       = 0x9b;
+                                         
+constexpr int   sun_radius               = 38;
+constexpr char  sun_gradient_top         = 0x3f;
+constexpr char  sun_gradient_bottom      = 0x30;
+                                         
+constexpr int   horizon_y                = 170;
+constexpr int   horizon_depth            = 8;
+constexpr char  horizon_gradient_top     = 0x30;
+constexpr char  horizon_gradient_bottom  = 0x97;
+constexpr char  floor_gradient_top       = 0x81;
+constexpr char  floor_gradient_bottom    = 0xca;
+constexpr char  city_height              = 20;
+constexpr char  city_hue                 = 0x30;
 
-// Colors
+constexpr int   shine_intensity          = 10; // Between 1 and 16
 
-#ifdef BLACK_AND_WHITE
-  constexpr char digit_gradient_top    = 0x09;
-  constexpr char digit_gradient_bottom = 0x02;
-  constexpr char digit_shadow_color    = 0x03;
-  constexpr char floor_gradient_top    = 0x00;
-  constexpr char floor_gradient_bottom = 0x06;
-#else
-  constexpr char digit_gradient_top    = 0x4b;
-  constexpr char digit_gradient_bottom = 0x92;
-  constexpr char digit_shadow_color    = 0x9b;
-  constexpr char floor_gradient_top    = 0x00;
-  constexpr char floor_gradient_bottom = 0x0f;
-#endif
-
-constexpr int shine_intensity = 10; // Between 1 and 16
-
-constexpr int num_sparkles = 3;
-constexpr float sparkle_duration = 0.5; // seconds
-constexpr float sparkle_phase = 0.4; // seconds
-constexpr int sparkle_size = 10;
+constexpr int   num_sparkles             = 3;
+constexpr float sparkle_duration         = 0.5; // seconds
+constexpr float sparkle_phase            = 0.4; // seconds
+constexpr int   sparkle_size             = 10;
 
 // Center the clock on the display
 
 constexpr int clock_width = digit_width * 6 + colon_width * 2;
-constexpr int left_margin = (display_width - clock_width)/2;
-constexpr int top_margin = (display_height - digit_height)/2;
+//constexpr int left_margin = (display_width - clock_width)/2;
+constexpr int left_margin = 0;

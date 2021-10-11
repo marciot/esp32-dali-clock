@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -15,11 +15,24 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
-#pragma once
+#include <Arduino.h>
+#include "gfx/CompositeGraphics.h"
+#include "../dali_config.h"
+#include "dali_gradient.h"
+#include "dali_sun.h"
 
-class DaliGradient {
-    public:
-        static uint8_t gradient_color(int row, int h, uint8_t color1, uint8_t color2);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color, int shine);
-};
+void DaliSun::draw(CompositeGraphics &g) {
+    const int r2 = sun_radius*sun_radius;
+    const int cy = horizon_y - horizon_depth - 10;
+    const int cx = display_width/2;
+    const int sun_top    = cy - sun_radius;
+    const int sun_bottom = horizon_y - horizon_depth;
+    for(int y = sun_top; y < sun_bottom; y++) {
+        const int dy = y-cy;
+        const int dx = sqrt(r2 - dy*dy);
+        if((dy>>1)&3)
+            g.line(cx - dx, y, cx + dx, y, 0x0F);
+    }
+    // Draw the gradient
+    DaliGradient::draw(g, cx - sun_radius, sun_top, cx + sun_radius, sun_bottom - sun_top, sun_gradient_top, sun_gradient_bottom, 0x0F);
+}

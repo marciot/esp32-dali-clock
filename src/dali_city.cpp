@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -15,11 +15,26 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
-#pragma once
+#include <Arduino.h>
+#include "gfx/CompositeGraphics.h"
+#include "../dali_config.h"
+#include "dali_gradient.h"
+#include "dali_city.h"
 
-class DaliGradient {
-    public:
-        static uint8_t gradient_color(int row, int h, uint8_t color1, uint8_t color2);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color, int shine);
-};
+void DaliCity::draw(CompositeGraphics &g) {
+    srand(0);
+    DaliCity::draw(g, city_height,    0x0F);
+    DaliCity::draw(g, city_height>>1, 0x0F);
+}
+
+void DaliCity::draw(CompositeGraphics &g, int city_height, char lumi) {
+    for(int x = 0; x < display_width;) {
+        const int w = 6 + rand() % 6;
+        const int gap = rand() % 6;
+        const int h = rand() % city_height;
+        g.fillRect(x,horizon_y-horizon_depth-h,w,h,0x0F);
+        x += w + gap;
+    }
+    // Draw the gradient
+    DaliGradient::draw(g, 0, horizon_y-horizon_depth-city_height, display_width, city_height, city_hue | lumi, city_hue, 0x0F);
+}

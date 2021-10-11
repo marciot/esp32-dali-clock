@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -22,13 +22,12 @@
 #include "dali_grid.h"
 
 constexpr int center_x = display_width/2;
-constexpr int center_y = display_height/2;
 constexpr char grid_mask_color = 0x0F; // Draw digits in this color, then overlay gradient
 
 void DaliGrid::draw(CompositeGraphics &g, float motion) {
     // Draw the horizon lines
-    for(uint16_t p = 2; ; p++) {
-        const int y = center_y + pow(2, motion + p);
+    for(uint16_t p = 1; ; p++) {
+        const int y = horizon_y + pow(2, motion + p);
         if(y > display_height) break;
         g.line(0, y, display_width, y, grid_mask_color);
     }
@@ -36,7 +35,7 @@ void DaliGrid::draw(CompositeGraphics &g, float motion) {
     // Draw the vanishing lines
     for(int16_t x = -int16_t(display_width); x < int16_t(display_width); x += display_width/4) {
         const int x1 = center_x + x/2;
-        const int y1 = center_y;
+        const int y1 = horizon_y;
         const int x2 = center_x + x;
         const int y2 = display_height;
         g.line(x1  , y1, x2  , y2, grid_mask_color);
@@ -44,5 +43,5 @@ void DaliGrid::draw(CompositeGraphics &g, float motion) {
     }
 
     // Draw the gradient
-    DaliGradient::draw(g, 0, center_y-1, display_width, display_height - center_y, floor_gradient_top, floor_gradient_bottom, grid_mask_color);
+    DaliGradient::draw(g, 0, horizon_y, display_width, display_height - horizon_y, floor_gradient_top, floor_gradient_bottom, grid_mask_color);
 }

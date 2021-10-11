@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2018 Marcio Teixeira                               *
+ *   DaliClock by (c) 2018 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -66,4 +66,6 @@ class DaliClock {
         void set_calender_mode(bool enable);
 };
 
-#define CLOCK_RECT  left_margin, top_margin, clock_width, digit_height
+#define CLOCK_RECT      left_margin, digit_top, clock_width, digit_height
+#define CLOCK_TOP_RECT  left_margin, digit_top, clock_width, digit_height*0.45
+#define CLOCK_BOT_RECT  left_margin, digit_top + digit_height*0.45, clock_width, digit_height*0.55

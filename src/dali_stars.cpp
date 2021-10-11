@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -15,11 +15,25 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
-#pragma once
+#include <Arduino.h>
+#include "../dali_config.h"
+#include "gfx/CompositeGraphics.h"
+#include "dali_stars.h"
 
-class DaliGradient {
-    public:
-        static uint8_t gradient_color(int row, int h, uint8_t color1, uint8_t color2);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color, int shine);
-};
+void DaliStars::draw(CompositeGraphics &g, float t) {
+    DaliStars::draw(g,t,0,0,display_width,horizon_y-horizon_depth);
+}
+    
+void DaliStars::draw(CompositeGraphics &g, float t, int x, int y, int w, int h) {
+    srand(0);
+    for(uint8_t i = 0; i < 100; i++) {
+        const int _x = x + rand() % w;
+        const int _y = y + rand() % h;
+        const char hue  = rand() % 16;
+        const uint32_t luma_freq = 1000 + rand() % 10000;
+        const uint32_t luma_phase = rand() % luma_freq;
+        const char luma = 12 + 4 * sin(2*PI*(millis()+luma_phase)/luma_freq);
+        const char luma_fade = max(0, luma - _y*12/h); // Fade towards horizon
+        g.dot(_x,_y,(hue << 4) + luma_fade);
+    }
+}

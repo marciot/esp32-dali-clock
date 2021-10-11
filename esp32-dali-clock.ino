@@ -25,6 +25,8 @@
 #define SUPPORT_NTSC 1
 #define SUPPORT_PAL  0
 
+#define CALENDAR_TOUCH_GPIO 4
+
 #include "esp_pm.h"
 
 #include "src/gfx/CompositeGraphics.h"
@@ -36,7 +38,11 @@
 #include "src/dali_digit.h"
 #include "src/dali_clock.h"
 #include "src/dali_grid.h"
+#include "src/dali_city.h"
+#include "src/dali_horizon.h"
+#include "src/dali_sun.h"
 #include "src/dali_sparkle.h"
+#include "src/dali_stars.h"
 #include "src/dali_status.h"
 
 //Graphics using the fixed resolution for the color graphics
@@ -46,9 +52,13 @@ CompositeColorOutput composite(CompositeColorOutput::NTSC);
 
 Font<CompositeGraphics> font(6, 8, font6x8::pixels);
 
-DaliClock dali;
-DaliGrid grid;
 DaliStatus info;
+DaliClock dali;
+DaliStars stars;
+DaliHorizon horizon;
+DaliSun sun;
+DaliGrid grid;
+DaliCity city;
 DaliSparkle sparkle[num_sparkles];
 
 WebServer server(80);
@@ -93,6 +103,10 @@ void draw() {
 
     info.draw(graphics);
     grid.draw(graphics, period_1s);
+    stars.draw(graphics,period_7s);
+    horizon.draw(graphics);
+    sun.draw(graphics);
+    city.draw(graphics);
     dali.draw(graphics);
     for(int i = 0; i < num_sparkles; i++) {
         sparkle[i].locate(graphics, period_7s1p - i * sparkle_phase, CLOCK_RECT, 0x0F);
@@ -110,6 +124,14 @@ void loop() {
     draw();
     composite.sendFrameHalfResolution(&graphics.frame);
     delay(10);
+    monitorTouch();
+}
+
+void monitorTouch() {
+    static uint16_t smoothed;
+    const uint16_t reading = touchRead(CALENDAR_TOUCH_GPIO);
+    smoothed = (9 * smoothed + reading)/10;
+    dali.set_calender_mode(reading < smoothed/2);
 }
 
 /********************************* WEB SERVER *********************************/

@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -17,9 +17,8 @@
 
 #pragma once
 
-class DaliGradient {
+class DaliStars {
     public:
-        static uint8_t gradient_color(int row, int h, uint8_t color1, uint8_t color2);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color, int shine);
+        void draw(CompositeGraphics &g, float t);
+        void draw(CompositeGraphics &g, float t, int x, int y, int w, int h);
 };

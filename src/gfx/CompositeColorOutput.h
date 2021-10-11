@@ -49,6 +49,11 @@
 #include "driver/gpio.h"
 #include "driver/i2s.h"
 
+#if !defined(SUPPORT_NTSC) && defined(SUPPORT_PAL)
+    #define SUPPORT_NTSC 1
+    #define SUPPORT_PAL 1
+#endif
+
 #ifdef IR_PIN
 #include "ir_input.h"  // ir peripherals
 #endif

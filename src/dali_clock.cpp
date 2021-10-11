@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -55,14 +55,14 @@ void DaliClock::get_time(uint8_t &hours, uint8_t &minutes, uint8_t &seconds) con
 /*************************** Drawing and Display Functions ****************************/
 
 // Position of individual digits and colons
-#define DIGIT_1_POS left_margin + digit_width * 0 + colon_width * 0, top_margin
-#define DIGIT_2_POS left_margin + digit_width * 1 + colon_width * 0, top_margin
-#define COLON_1_POS left_margin + digit_width * 2 + colon_width * 0, top_margin
-#define DIGIT_3_POS left_margin + digit_width * 2 + colon_width * 1, top_margin
-#define DIGIT_4_POS left_margin + digit_width * 3 + colon_width * 1, top_margin
-#define COLON_2_POS left_margin + digit_width * 4 + colon_width * 1, top_margin
-#define DIGIT_5_POS left_margin + digit_width * 4 + colon_width * 2, top_margin
-#define DIGIT_6_POS left_margin + digit_width * 5 + colon_width * 2, top_margin
+#define DIGIT_1_POS left_margin + digit_width * 0 + colon_width * 0, digit_top
+#define DIGIT_2_POS left_margin + digit_width * 1 + colon_width * 0, digit_top
+#define COLON_1_POS left_margin + digit_width * 2 + colon_width * 0, digit_top
+#define DIGIT_3_POS left_margin + digit_width * 2 + colon_width * 1, digit_top
+#define DIGIT_4_POS left_margin + digit_width * 3 + colon_width * 1, digit_top
+#define COLON_2_POS left_margin + digit_width * 4 + colon_width * 1, digit_top
+#define DIGIT_5_POS left_margin + digit_width * 4 + colon_width * 2, digit_top
+#define DIGIT_6_POS left_margin + digit_width * 5 + colon_width * 2, digit_top
 
 constexpr char digit_mask_color = 0x0F; // Draw digits in this color, then overlay gradient
 
@@ -99,7 +99,9 @@ void DaliClock::draw_morphed_separator(CompositeGraphics &g, uint8_t blend) {
 }
 
 void DaliClock::draw_gradient_and_shine(CompositeGraphics &g, float i) {
-    DaliGradient::draw(g, CLOCK_RECT, digit_gradient_top, digit_gradient_bottom, digit_mask_color, (display_width + digit_height) * i);
+    const int shine = (display_width + digit_height) * i;
+    DaliGradient::draw(g, CLOCK_TOP_RECT, digit_gradient_top, digit_gradient_midtop, digit_mask_color, shine);
+    DaliGradient::draw(g, CLOCK_BOT_RECT, digit_gradient_midbot, digit_gradient_bottom, digit_mask_color, shine);
 }
 
 void DaliClock::draw(CompositeGraphics &g) {

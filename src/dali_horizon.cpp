@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -15,11 +15,12 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
-#pragma once
+#include <Arduino.h>
+#include "gfx/CompositeGraphics.h"
+#include "../dali_config.h"
+#include "dali_gradient.h"
+#include "dali_horizon.h"
 
-class DaliGradient {
-    public:
-        static uint8_t gradient_color(int row, int h, uint8_t color1, uint8_t color2);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color);
-        static void draw(CompositeGraphics &g, int x, int y, int w, int h, char color1, char color2, char mask_color, int shine);
-};
+void DaliHorizon::draw(CompositeGraphics &g) {
+    DaliGradient::draw(g, 0, horizon_y - horizon_depth, display_width, horizon_depth, horizon_gradient_top, horizon_gradient_bottom, 0x00);
+}

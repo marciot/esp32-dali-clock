@@ -1,5 +1,5 @@
 /****************************************************************************
- *   DaliClock by (c) 2021 Marcio Teixeira                               *
+ *   DaliClock by (c) 2021 Marcio Teixeira                                  *
  *                                                                          *
  *   This program is free software: you can redistribute it and/or modify   *
  *   it under the terms of the GNU General Public License as published by   *
@@ -20,11 +20,12 @@
 #include "gfx/CompositeGraphics.h"
 #include "dali_gradient.h"
 
-uint8_t DaliGradient::gradient_color(int row, int h, char color1, char color2) {
-    const float mix = float(row)/h;
-    #define MIX(A,B) uint8_t((1 - mix) * (A) + mix * (B))
-    return (MIX(color1 & 0xF0, color2 & 0xF0) & 0xF0) +
-            MIX(color1 & 0x0F, color2 & 0x0F);
+uint8_t DaliGradient::gradient_color(int row, int h, uint8_t color1, uint8_t color2) {
+    #define MIX(A,B) uint8_t((1 - ratio) * (A) + ratio * (B))
+    const float   ratio = float(row)/(h-1);
+    const uint8_t chroma = MIX(color1 >> 4, color2 >> 4) << 4;
+    const uint8_t luma   = MIX(color1 & 0x0F, color2 & 0x0F) & 0x0F;
+    return chroma | luma;
 }
 
 char add_luminance(char color, char luminance) {
