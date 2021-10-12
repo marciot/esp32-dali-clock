@@ -21,8 +21,7 @@
 
 namespace DaliDawn {
     constexpr char  masking_color            = 0xff;
-    constexpr bool  draw_stars               = false;
-    constexpr char  background_color         = 0x01; // 0x70
+    constexpr char  background_color         = 0x02; // 0x70
     constexpr char  digit_gradient_top       = 0x90;
     constexpr char  digit_gradient_midtop    = 0xac;
     constexpr char  digit_gradient_midbot    = 0x30;
@@ -39,7 +38,6 @@ namespace DaliDawn {
 
 namespace DaliNight {
     constexpr char  masking_color            = 0xff;
-    constexpr bool  draw_stars               = true;
     constexpr char  background_color         = 0x00;
     constexpr char  digit_gradient_top       = 0x90;
     constexpr char  digit_gradient_midtop    = 0xac;
@@ -57,7 +55,6 @@ namespace DaliNight {
 
 namespace DaliDay {
     constexpr char  masking_color            = 0xff;
-    constexpr bool  draw_stars               = false;
     constexpr char  background_color         = 0x0f;
     constexpr char  digit_gradient_top       = 0x95;
     constexpr char  digit_gradient_midtop    = 0xac;
@@ -75,8 +72,7 @@ namespace DaliDay {
 
 namespace DaliDusk {
     constexpr char  masking_color            = 0xff;
-    constexpr bool  draw_stars               = false;
-    constexpr char  background_color         = 0x01;
+    constexpr char  background_color         = 0x02;
     constexpr char  digit_gradient_top       = 0x90;
     constexpr char  digit_gradient_midtop    = 0xac;
     constexpr char  digit_gradient_midbot    = 0xa0;
@@ -93,7 +89,6 @@ namespace DaliDusk {
 
 // Active color theme
 
-extern bool draw_stars;
 extern char background_color;
 extern char masking_color;
 extern char digit_gradient_top;

@@ -31,7 +31,7 @@ uint8_t DaliGradient::mix_chroma(uint8_t a, uint8_t b, float ratio) {
     if(a == 0) return mix(a, b,ratio); // Blending from white to color
     // Blending from hue to hue:
     a--; b--;// Skip white ($0x) when mixing hues
-    if(b - a > 7) return mix(a+15,b,ratio)%15+1; // Wrap around the bottom
+    if(b - a > 7) return (mix(a+15,b,ratio)%15)+1; // Wrap around the bottom
     return mix(a,b,ratio)+1;
 }
 

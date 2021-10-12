@@ -26,16 +26,16 @@ void DaliStars::draw(CompositeGraphics &g, float t) {
 }
     
 void DaliStars::draw(CompositeGraphics &g, float t, int x, int y, int w, int h) {
-    if(!draw_stars) return;
+    if(background_color != 0x00) return;
     srand(0);
     for(uint8_t i = 0; i < 100; i++) {
         const int _x = x + rand() % w;
         const int _y = y + rand() % h;
         const char hue  = rand() % 16;
-        const uint32_t luma_freq = 1000 + rand() % 10000;
+        const uint32_t luma_freq  = rand() % 10000 + 1000;
         const uint32_t luma_phase = rand() % luma_freq;
         const char luma = 12 + 4 * sin(2*PI*(millis()+luma_phase)/luma_freq);
-        const char luma_fade = max(0, luma - _y*12/h); // Fade towards horizon
+        const char luma_fade = max(0, luma - _y*10/h); // Fade towards horizon
         g.dot(_x,_y,(hue << 4) + luma_fade);
     }
 }

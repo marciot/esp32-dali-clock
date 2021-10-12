@@ -134,7 +134,7 @@ void monitorTouch() {
     static uint16_t smoothed;
     const uint16_t reading = touchRead(CALENDAR_TOUCH_GPIO);
     smoothed = (9 * smoothed + reading)/10;
-    dali.set_calender_mode(reading < smoothed/2);
+    dali.set_calender_mode(reading < smoothed*0.8);
 }
 
 /********************************* WEB SERVER *********************************/

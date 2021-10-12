@@ -21,7 +21,6 @@
 #include "dali_color_theme.h"
 #include "dali_gradient.h"
 
-bool draw_stars               = DaliDusk::draw_stars;
 char background_color         = DaliDusk::background_color;
 char masking_color            = DaliDusk::masking_color;
 char digit_gradient_top       = DaliDusk::digit_gradient_top;
