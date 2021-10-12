@@ -19,7 +19,27 @@
 #include "gfx/CompositeGraphics.h"
 #include "dali_digit.h"
 
-void DaliDigit::init(const dali_digit_t &d1, const dali_digit_t &d2, uint8_t blend) {
+const dali_digit_t &DaliDigit::getDigitInfo(char c) {
+    const dali_digit_t *digits[] = {
+        &DIGIT_INFO(slash),
+        &DIGIT_INFO(zero),
+        &DIGIT_INFO(one),
+        &DIGIT_INFO(two),
+        &DIGIT_INFO(three),
+        &DIGIT_INFO(four),
+        &DIGIT_INFO(five),
+        &DIGIT_INFO(six),
+        &DIGIT_INFO(seven),
+        &DIGIT_INFO(eight),
+        &DIGIT_INFO(nine),
+        &DIGIT_INFO(colon)
+    };
+    return *digits[(c - '/') % 11];
+}
+
+void DaliDigit::init(char c1, char c2, uint8_t blend) {
+    const dali_digit_t &d1 = getDigitInfo(c1);
+    const dali_digit_t &d2 = getDigitInfo(c2);
     height      = max(d1.height, d2.height);
     width       = max(d1.width, d2.width);
     _linestride = max(d1.linestride, d2.linestride);
@@ -29,54 +49,18 @@ void DaliDigit::init(const dali_digit_t &d1, const dali_digit_t &d2, uint8_t ble
     _row        = 0;
 }
 
-void DaliDigit::init(uint8_t d1, uint8_t d2, uint8_t blend) {
-    const dali_digit_t *digits[] = {
-        &DIGIT_INFO(zero),
-        &DIGIT_INFO(one),
-        &DIGIT_INFO(two),
-        &DIGIT_INFO(three),
-        &DIGIT_INFO(four),
-        &DIGIT_INFO(five),
-        &DIGIT_INFO(six),
-        &DIGIT_INFO(seven),
-        &DIGIT_INFO(eight),
-        &DIGIT_INFO(nine),
-        &DIGIT_INFO(colon),
-        &DIGIT_INFO(slash)
-    };
-    init(*digits[d1], *digits[d2], blend);
+DaliDigit::DaliDigit(char c) {
+    init(c, c, 0);
 }
 
-DaliDigit::DaliDigit(const dali_digit_t &d1, const dali_digit_t &d2, uint8_t blend) {
-    init(d1, d2, blend);
-}
-
-DaliDigit::DaliDigit(uint8_t d1, uint8_t d2, uint8_t blend) {
-    const dali_digit_t *digits[] = {
-        &DIGIT_INFO(zero),
-        &DIGIT_INFO(one),
-        &DIGIT_INFO(two),
-        &DIGIT_INFO(three),
-        &DIGIT_INFO(four),
-        &DIGIT_INFO(five),
-        &DIGIT_INFO(six),
-        &DIGIT_INFO(seven),
-        &DIGIT_INFO(eight),
-        &DIGIT_INFO(nine),
-        &DIGIT_INFO(colon),
-        &DIGIT_INFO(slash)
-    };
-    init(*digits[d1], *digits[d2], blend);
+DaliDigit::DaliDigit(char c1, char c2, uint8_t blend) {
+    init(c1, c2, blend);
 }
 
 DaliDigit::DaliDigit(float digit, uint8_t wrap) {
     const uint8_t f = floor(digit);
     const uint8_t c = ceil(digit);
-    init(f, (f == wrap) ?  0 : c, min(255,int((digit - f)*512)));
-}
-
-DaliDigit::DaliDigit(const dali_digit_t &d) {
-    init(d, d, 0);
+    init('0' + f, '0' + (f == wrap ?  0 : c), min(255,int((digit - f)*512)));
 }
 
 void DaliDigit::unpack_rle_to_graphics(CompositeGraphics &g, const uint8_t *src, int x, int y, uint8_t color) {

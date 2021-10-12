@@ -33,23 +33,20 @@ class DaliDigit {
         uint8_t _blend;
         const uint8_t *_rle_1;
         const uint8_t *_rle_2;
+        
+        const dali_digit_t &getDigitInfo(char c);
 
         void unpack_rle_to_graphics(CompositeGraphics &g, const uint8_t *src, int x, int y, uint8_t color);
 
         static void rle_to_segment_endpoints(uint8_t rle[]);
         static void segment_endpoints_to_rle(uint8_t rle[]);
         static void blend_rle(uint8_t start[4], uint8_t final[], uint8_t blend);
-        void init(const dali_digit_t &d1, const dali_digit_t &d2, uint8_t blend);
-        void init(uint8_t d1, uint8_t d2, uint8_t blend);
+
+        void init(char c1, char c2, uint8_t blend);
     public:
         uint16_t height, width;
-        enum {
-            COLON = 10,
-            DASH  = 11
-        };
-        DaliDigit(const dali_digit_t &d);
-        DaliDigit(const dali_digit_t &d1, const dali_digit_t &d2, uint8_t blend);
-        DaliDigit(uint8_t d1, uint8_t d2, uint8_t blend);
+        DaliDigit(char c);
+        DaliDigit(char c1, char c2, uint8_t blend);
         DaliDigit(float digit, uint8_t wrap = 9);
         bool draw_row(CompositeGraphics &g, int x, int y, uint8_t color);
 };
