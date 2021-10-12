@@ -141,7 +141,7 @@ void monitorTouch() {
 constexpr char *ap_ssid = "ESP32 Dali Clock";
 constexpr char *configPath = "/config.txt";
 constexpr uint32_t wifiTimeout = 10000;
-constexpr char * webpage = R"rawliteral(
+constexpr char * webpage_main = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -216,6 +216,24 @@ constexpr char * webpage = R"rawliteral(
 </html>
 )rawliteral";
 
+constexpr char * webpage_ok = R"rawliteral(
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>ESP32 Dali Clock</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <h1>ESP32 Dali Clock</h1>
+        <p>Configuration accepted!</p><br>
+        <form>
+            <input type="button" value="Okay" onclick="history.back()">
+        </form>
+    </body>
+</html>
+)rawliteral";
+
 void wifi_start() {
     xTaskCreatePinnedToCore(wifi_task, "wifi_task", 3*1024, NULL, 0, NULL, 1);
 }
@@ -266,7 +284,7 @@ void wifi_task(void* arg) {
 
         // Start web server
         server.on("/config_wifi", HTTP_GET, [](){
-            server.send(200, "text/plain", "Configuration accepted!");
+            server.send(200, "text/html", webpage_ok);
             // Write a configuration file
             File file = SPIFFS.open(configPath, FILE_WRITE);
             file.println(server.arg("net_ssid"));
@@ -280,14 +298,14 @@ void wifi_task(void* arg) {
             ESP.restart();
         });
         server.on("/config_time", HTTP_GET, [](){
-            server.send(200, "text/plain", "Configuration accepted!");
+            server.send(200, "text/html", webpage_ok);
             // Write a configuration file
             String str = server.arg("datetime-local");
             dali.set_date (str.substring(5,7).toInt(), str.substring(8,10).toInt(), str.substring(0,4).toInt());
             dali.set_time (str.substring(11,13).toInt(), str.substring(14,16).toInt(), str.substring(17,19).toInt());
         });
         server.onNotFound([](){
-            server.send(200, "text/html", webpage);
+            server.send(200, "text/html", webpage_main);
         });
         server.begin();
         while(1) {
