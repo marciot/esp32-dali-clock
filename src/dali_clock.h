@@ -22,7 +22,8 @@ class DaliClock {
         bool     calendar_requested;
         uint8_t  calendar_blend;
         uint32_t calendar_entry_ms;
-        uint8_t  calendar_m, calendar_d, calendar_y;
+        uint8_t  calendar_m, calendar_d;
+        uint16_t calendar_y;
 
         uint32_t offset;
 
@@ -59,8 +60,8 @@ class DaliClock {
         void set_time (uint8_t hours, uint8_t minutes, uint8_t seconds);
         void get_time(uint8_t &hours, uint8_t &minutes, float &seconds) const;
         void get_time(uint8_t &hours, uint8_t &minutes, uint8_t &seconds) const;
-        void set_date(uint8_t month, uint8_t day, uint8_t year);
-        void get_date(uint8_t &month, uint8_t &day, uint8_t &year) const;
+        void set_date(uint8_t month, uint8_t day, uint16_t year);
+        void get_date(uint8_t &month, uint8_t &day, uint16_t &year) const;
         void set_digit(uint8_t digit, uint8_t value);
 
         void set_calender_mode(bool enable);

@@ -156,7 +156,20 @@ constexpr char * webpage = R"rawliteral(
     </head>
     <body>
         <h1>ESP32 Dali Clock</h1>
+        <form action="/config_time" method="get">
+            <h2>Manual Time Selection</h2>
+            <div><label for="datetime-local">Time:</label>
+            <input type="datetime-local" id="datetime-local" name="datetime-local" step="1"></div>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
         <form action="/config_wifi" method="get">
+            <h2>Network Configuration</h2>
+            <div><label for="net_ssid">Network Name:</label>
+            <input type="text" id="net_ssid" name="net_ssid"></div>
+            <div><label for="net_pass">Network Password:</label>
+            <input type="text" id="net_pass" name="net_pass"></div>
+            <br>
             <div><label for="ntp_addr">Time Server:</label>
             <input type="text" id="ntp_addr" name="ntp_addr" value="pool.ntp.org"></div>
             <div><label for="timezone">Time Zone:</label>
@@ -196,11 +209,6 @@ constexpr char * webpage = R"rawliteral(
             </select></div>
             <div><label for="time_dst">Daylight Savings Time:</label>
             <input type="checkbox" id="time_dst" name="time_dst"></div>
-            <br>
-            <div><label for="net_ssid">Network Name:</label>
-            <input type="text" id="net_ssid" name="net_ssid"></div>
-            <div><label for="net_pass">Network Password:</label>
-            <input type="text" id="net_pass" name="net_pass"></div>
             <br>
             <input type="submit" value="Submit">
         </form>
@@ -270,6 +278,13 @@ void wifi_task(void* arg) {
             info.set("Rebooting...");
             delay(2000);
             ESP.restart();
+        });
+        server.on("/config_time", HTTP_GET, [](){
+            server.send(200, "text/plain", "Configuration accepted!");
+            // Write a configuration file
+            String str = server.arg("datetime-local");
+            dali.set_date (str.substring(5,7).toInt(), str.substring(8,10).toInt(), str.substring(0,4).toInt());
+            dali.set_time (str.substring(11,13).toInt(), str.substring(14,16).toInt(), str.substring(17,19).toInt());
         });
         server.onNotFound([](){
             server.send(200, "text/html", webpage);

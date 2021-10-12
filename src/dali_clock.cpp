@@ -29,11 +29,12 @@ void DaliClock::sync_from_rtc() {
 
     struct tm *t = localtime( &rawtime );
     set_time(t->tm_hour, t->tm_min, t->tm_sec);
-    set_date(t->tm_mon+1, t->tm_mday, t->tm_year % 100);
+    set_date(t->tm_mon+1, t->tm_mday, t->tm_year);
 }
 
 void DaliClock::sync_to_rtc() {
-    uint8_t h, m, s, month, day, year;
+    uint8_t h, m, s, month, day;
+    uint16_t year;
     get_time(h, m, s);
     get_date(month, day, year);
     //DS1302::set(h, m, s, month, day, year, 0);
@@ -104,7 +105,7 @@ void DaliClock::draw_gradient_and_shine(CompositeGraphics &g, float i) {
 }
 
 void DaliClock::draw(CompositeGraphics &g) {
-    uint8_t month, day, year, hours, minutes;
+    uint8_t hours, minutes;
     float   seconds;
     get_time(hours, minutes, seconds);
 
@@ -119,21 +120,22 @@ void DaliClock::draw(CompositeGraphics &g) {
         draw_morphed_digit(g, time, time_limits);
         draw_morphed_separator(g, 0);
     } else {
-        uint8_t month, day, year;
+        uint8_t month, day;
+        uint16_t year;
         get_date(month, day, year);
 
         if(calendar_blend == 255) {
             // Calendar display
             uint8_t date_limits[6];
             float date[6];
-            mdy_to_digits(month, day, year, date);
+            mdy_to_digits(month, day, year % 100, date);
             get_calendar_digit_limits(date_limits);
             draw_morphed_digit(g, date, date_limits);
             draw_morphed_separator(g, 255);
         } else {
             // Transition between time and calendar display
             uint8_t time[6], date[6];
-            mdy_to_digits(month, day, year, date);
+            mdy_to_digits(month, day, year % 100, date);
             hms_to_digits(hours, minutes, seconds, time);
             draw_morphed_digit(g, time, date, calendar_blend);
             draw_morphed_separator(g, calendar_blend);
@@ -232,13 +234,13 @@ void DaliClock::get_calendar_digit_limits(uint8_t digit_limit[6]) {
     digit_limit[5] = 9;
 }
 
-void DaliClock::set_date(uint8_t month, uint8_t day, uint8_t year) {
+void DaliClock::set_date(uint8_t month, uint8_t day, uint16_t year) {
     calendar_m = month;
     calendar_d = day;
     calendar_y = year;
 }
 
-void DaliClock::get_date(uint8_t &month, uint8_t &day, uint8_t &year) const {
+void DaliClock::get_date(uint8_t &month, uint8_t &day, uint16_t &year) const {
     month = calendar_m;
     day   = calendar_d;
     year  = calendar_y;

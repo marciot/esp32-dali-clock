@@ -23,7 +23,7 @@ class DaliStatus {
         char color;
         uint32_t lastUpdate;
 
-        bool darkBackground() {return background_color & 0x0F < 8;}
+        bool darkBackground() {return (background_color & 0x0F) < 8;}
 
         void fade() {
             if(millis() - lastUpdate > 1000) {
