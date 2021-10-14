@@ -28,25 +28,13 @@ struct dali_digit_t {
 
 class DaliDigit {
     private:
-        uint16_t _row;
-        uint8_t _linestride;
-        uint8_t _blend;
-        const uint8_t *_rle_1;
-        const uint8_t *_rle_2;
-        
-        const dali_digit_t &getDigitInfo(char c);
-
-        void unpack_rle_to_graphics(CompositeGraphics &g, const uint8_t *src, int x, int y, uint8_t color);
-
+        static const dali_digit_t *getDigitInfo(char c);
         static void rle_to_segment_endpoints(uint8_t rle[]);
         static void segment_endpoints_to_rle(uint8_t rle[]);
-        static void blend_rle(uint8_t start[4], uint8_t final[], uint8_t blend);
-
-        void init(char c1, char c2, uint8_t blend);
+        static void blend_rle(uint8_t start[4], uint8_t final[4], uint8_t blended[4], uint8_t blend);
+        static void unpack_rle_to_graphics(CompositeGraphics &g, const uint8_t *src, int x, int y, uint8_t color);
     public:
-        uint16_t height, width;
-        DaliDigit(char c);
-        DaliDigit(char c1, char c2, uint8_t blend);
-        DaliDigit(float digit, uint8_t wrap = 9);
-        bool draw_row(CompositeGraphics &g, int x, int y, uint8_t color);
+        static void draw_row(CompositeGraphics &g, char c1, char c2, uint8_t blend, uint16_t row, int &x, int y, uint8_t color);
+        static void draw_row(CompositeGraphics &g, char *str1, char *str2, uint8_t blend, uint16_t row, int x, int y, uint8_t color);
+        static void draw(CompositeGraphics &g, char *str1, char *str2, uint8_t blend, int x, int y, uint8_t color);
 };

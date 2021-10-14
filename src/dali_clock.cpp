@@ -27,22 +27,33 @@
 #include "dali_clock.h"
 
 DaliClock::DaliClock() {
-    /*struct tm timeinfo;
-    timeinfo.tm_sec = 1;
-    
-    offset_time = mktime(&timeinfo);*/
-}
-
-void DaliClock::sync_from_rtc() {
-}
-
-void DaliClock::sync_to_rtc() {
+    offset_time = 1;
+    strcpy(old_display,"00:00:00");
+    strcpy(new_display,"00:00:00");
 }
 
 void DaliClock::set_time(uint8_t hours, uint8_t minutes, uint8_t seconds) {
+    timeval rawtime;
+    if(!gettimeofday(&rawtime, nullptr)) {
+        struct tm *t = localtime(&rawtime.tv_sec);
+        t->tm_hour = hours;
+        t->tm_min  = minutes;
+        t->tm_sec  = seconds;
+        rawtime.tv_sec = mktime(t);
+        settimeofday(&rawtime, nullptr);
+    }
 }
 
 void DaliClock::set_date(uint8_t month, uint8_t day, uint16_t year) {
+    timeval rawtime;
+    if(!gettimeofday(&rawtime, nullptr)) {
+        struct tm *t = localtime(&rawtime.tv_sec);
+        t->tm_mon  = month-1;
+        t->tm_mday = day;
+        t->tm_year = year - 1900;
+        rawtime.tv_sec = mktime(t);
+        settimeofday(&rawtime, nullptr);
+    }
 }
 
 void DaliClock::set_calender_mode(bool enable) {
@@ -50,25 +61,6 @@ void DaliClock::set_calender_mode(bool enable) {
 }
 
 /*************************** Drawing and Display Functions ****************************/
-
-// Position of individual digits and colons
-#define DIGIT_1_POS left_margin + digit_width * 0 + colon_width * 0, digit_top
-#define DIGIT_2_POS left_margin + digit_width * 1 + colon_width * 0, digit_top
-#define COLON_1_POS left_margin + digit_width * 2 + colon_width * 0, digit_top
-#define DIGIT_3_POS left_margin + digit_width * 2 + colon_width * 1, digit_top
-#define DIGIT_4_POS left_margin + digit_width * 3 + colon_width * 1, digit_top
-#define COLON_2_POS left_margin + digit_width * 4 + colon_width * 1, digit_top
-#define DIGIT_5_POS left_margin + digit_width * 4 + colon_width * 2, digit_top
-#define DIGIT_6_POS left_margin + digit_width * 5 + colon_width * 2, digit_top
-
-void DaliClock::draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y, char color) {
-    while(digit.draw_row(g, x, y, color)) y++;
-}
-
-void DaliClock::draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y) {
-    draw_digit(g, digit, x + 2, y + 2, digit_shadow_color); // Draw the shadow
-    draw_digit(g, digit, x    , y    , masking_color); // Draw the digit
-}
 
 void DaliClock::draw_gradient_and_shine(CompositeGraphics &g, float i) {
     const int shine = (display_width + digit_height) * i;
@@ -78,37 +70,38 @@ void DaliClock::draw_gradient_and_shine(CompositeGraphics &g, float i) {
 
 
 void DaliClock::draw(CompositeGraphics &g) {
-    /*uint16_t blend = (millis() - offset_ms) * 255 / 1000;
-    if(blend > 255) {
+    constexpr uint16_t blend_time_ms = 250;
+    
+    uint32_t elapsed = millis() - last_change_ms;
+    if (elapsed > 1000) {
+        last_change_ms = millis();
         // We are done cycling the previous digits, so setup to change to the next
         time_to_digits();
+        elapsed = millis() - last_change_ms;
     }
     
+    const uint8_t blend = min(255u, elapsed * 255 / blend_time_ms);
+    
     // Draw the display
-    draw_digit(g, DaliDigit(old_display[0], new_display[0], blend), DIGIT_1_POS);
-    draw_digit(g, DaliDigit(old_display[1], new_display[1], blend), DIGIT_2_POS);
-    draw_digit(g, DaliDigit(old_display[2], new_display[2], blend), COLON_1_POS);
-    draw_digit(g, DaliDigit(old_display[3], new_display[3], blend), DIGIT_3_POS);
-    draw_digit(g, DaliDigit(old_display[4], new_display[4], blend), DIGIT_4_POS);
-    draw_digit(g, DaliDigit(old_display[5], new_display[5], blend), COLON_2_POS);
-    draw_digit(g, DaliDigit(old_display[6], new_display[6], blend), DIGIT_5_POS);
-    draw_digit(g, DaliDigit(old_display[7], new_display[7], blend), DIGIT_6_POS);*/
+    DaliDigit::draw(g, old_display, new_display, blend, left_margin + 2, digit_top + 2, digit_shadow_color); // Draw the shadow
+    DaliDigit::draw(g, old_display, new_display, blend, left_margin    , digit_top    , masking_color     ); // Draw the digit
 }
 
 /*************************** Time Conversion Functions ****************************/
 
-void DaliClock::hms_to_str(uint8_t hours, uint8_t minutes, uint8_t seconds, char str[8]) {
-    str[0] = hours / 10;
-    str[1] = hours % 10;
+void DaliClock::hms_to_str(uint8_t hours, uint8_t minutes, uint8_t seconds, char str[9]) {
+    str[0] = '0' + hours / 10;
+    str[1] = '0' + hours % 10;
     str[2] = ':';
-    str[3] = minutes / 10;
-    str[4] = minutes % 10;
+    str[3] = '0' + minutes / 10;
+    str[4] = '0' + minutes % 10;
     str[5] = ':';
-    str[6] = seconds / 10;
-    str[7] = seconds % 10;
+    str[6] = '0' + seconds / 10;
+    str[7] = '0' + seconds % 10;
+    str[8] = '\0';
 }
 
-void DaliClock::mdy_to_str(uint8_t month, uint8_t day, uint8_t year, char str[8]) {
+void DaliClock::mdy_to_str(uint8_t month, uint8_t day, uint8_t year, char str[9]) {
     str[0] = '0' + month / 10;
     str[1] = '0' + month % 10;
     str[2] = '/';
@@ -117,14 +110,17 @@ void DaliClock::mdy_to_str(uint8_t month, uint8_t day, uint8_t year, char str[8]
     str[5] = '/';
     str[6] = '0' + year  / 10;
     str[7] = '0' + year  % 10;
+    str[8] = '\0';
 }
 
 void DaliClock::time_to_digits() {
     timeval rawtime;
     
     if(!gettimeofday(&rawtime, nullptr)) {
-        // Update the offset
-        offset_ms = millis() - rawtime.tv_usec/1000;
+        // Sync our transitions to real time
+        
+        if (rawtime.tv_usec > 100000)
+            last_change_ms -= 100;
         
         // Swap the displays
         memcpy(old_display, new_display, 8);

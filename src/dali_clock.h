@@ -20,23 +20,17 @@
 class DaliClock {
     private:
         bool calendar_mode;
-        uint32_t offset_ms;
+        uint32_t last_change_ms;
         time_t   offset_time;
         
-        char old_display[8];
-        char new_display[8];
-
-        static void draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y, char color);
-        static void draw_digit(CompositeGraphics &g, DaliDigit digit, int x, int y);
+        char old_display[9];
+        char new_display[9];
 
         void hms_to_str(uint8_t hours, uint8_t minutes, uint8_t seconds, char str[6]);
         void mdy_to_str(uint8_t month, uint8_t day, uint8_t year, char str[8]);
         void time_to_digits();
     public:
         DaliClock();
-
-        void sync_from_rtc();
-        void sync_to_rtc();
 
         static void draw_gradient_and_shine(CompositeGraphics &g, float f);
 

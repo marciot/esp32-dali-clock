@@ -23,22 +23,17 @@
 
 void DaliSparkle::locate(CompositeGraphics &g, float t, int x, int y, int w, int h) {
     if(t > sparkle_duration) {
-        do {
-            // Random position
-            _x = random(x, x+w);
-            _y = random(y, y+h);
-            // Find nearest edge
-            const bool onMask = g.get(_x,_y) == masking_color;
-            while(onMask == (g.get(_x,_y) == masking_color)) {
-                _x++;
-                if(_x == display_width) break;
-            }
-        } while (_x == display_width);
+        // Random position
+        _x = random(x, x+w);
+        _y = random(y, y+h);
+        // Find nearest edge
+        const bool        onMask =  (g.get(_x--,_y) == masking_color);
+        while(_x >= x && (onMask == (g.get(_x--,_y) == masking_color)));
     }
 }
 
 void DaliSparkle::draw(CompositeGraphics &g, float t) {
-    if(t > 0 && t < sparkle_duration) {
+    if(_x && t > 0 && t < sparkle_duration) {
         const int r = sparkle_size * sin(t/sparkle_duration*2*PI);
         // Vary the color and lengths of the diagonal and horizontal elements
         const char dark = (background_color & 0x0F) < 8 ? 0x0F : 0x00;

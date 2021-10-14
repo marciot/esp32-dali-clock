@@ -19,7 +19,7 @@
 #include "gfx/CompositeGraphics.h"
 #include "dali_digit.h"
 
-const dali_digit_t &DaliDigit::getDigitInfo(char c) {
+const dali_digit_t *DaliDigit::getDigitInfo(char c) {
     const dali_digit_t *digits[] = {
         &DIGIT_INFO(slash),
         &DIGIT_INFO(zero),
@@ -34,46 +34,7 @@ const dali_digit_t &DaliDigit::getDigitInfo(char c) {
         &DIGIT_INFO(nine),
         &DIGIT_INFO(colon)
     };
-    return *digits[(c - '/') % 11];
-}
-
-void DaliDigit::init(char c1, char c2, uint8_t blend) {
-    const dali_digit_t &d1 = getDigitInfo(c1);
-    const dali_digit_t &d2 = getDigitInfo(c2);
-    height      = max(d1.height, d2.height);
-    width       = max(d1.width, d2.width);
-    _linestride = max(d1.linestride, d2.linestride);
-    _rle_1      = d1.packed_rle;
-    _rle_2      = d2.packed_rle;
-    _blend      = blend;
-    _row        = 0;
-}
-
-DaliDigit::DaliDigit(char c) {
-    init(c, c, 0);
-}
-
-DaliDigit::DaliDigit(char c1, char c2, uint8_t blend) {
-    init(c1, c2, blend);
-}
-
-DaliDigit::DaliDigit(float digit, uint8_t wrap) {
-    const uint8_t f = floor(digit);
-    const uint8_t c = ceil(digit);
-    init('0' + f, '0' + (f == wrap ?  0 : c), min(255,int((digit - f)*512)));
-}
-
-void DaliDigit::unpack_rle_to_graphics(CompositeGraphics &g, const uint8_t *src, int x, int y, uint8_t color) {
-    uint8_t len = 4;
-    uint8_t n;
-    do {
-        // Skip background pixels
-        x += *src++;
-        // Draw foreground pixels
-        n = *src++;
-        while(n--) g.dot(x++, y, color);
-        len -= 2;
-    } while(len != 0);
+    return digits[uint8_t(c - '/') % 12];
 }
 
 void DaliDigit::rle_to_segment_endpoints(uint8_t rle[]) {
@@ -100,24 +61,47 @@ void DaliDigit::segment_endpoints_to_rle(uint8_t rle[]) {
     }
 }
 
-void DaliDigit::blend_rle(uint8_t start[4], uint8_t final[], uint8_t blend) {
+void DaliDigit::blend_rle(uint8_t start[4], uint8_t final[4], uint8_t blended[4], uint8_t blend) {
     rle_to_segment_endpoints(start);
     rle_to_segment_endpoints(final);
     for(uint8_t i = 0; i < 4; i++) {
-        final[i] = ((256-blend) * start[i] + blend * final[i]) / 256;
+        blended[i] = ((256-blend) * start[i] + blend * final[i]) / 256;
     }
-    segment_endpoints_to_rle(final);
+    segment_endpoints_to_rle(blended);
 }
 
-bool DaliDigit::draw_row(CompositeGraphics &g, int x, int y, uint8_t color) {
-    if(_row++ == height) return false;
-    uint8_t start[4], final[4];
-    memcpy(start, _rle_1, 4); _rle_1 += 4;
-    memcpy(final, _rle_2, 4); _rle_2 += 4;
-    blend_rle(start, final, _blend);
-    unpack_rle_to_graphics(g, final, x, y, color);
-    return true;
+void DaliDigit::unpack_rle_to_graphics(CompositeGraphics &g, const uint8_t *src, int x, int y, uint8_t color) {
+    uint8_t len = 4;
+    uint8_t n;
+    do {
+        // Skip background pixels
+        x += *src++;
+        // Draw foreground pixels
+        n = *src++;
+        while(n--) g.dot(x++, y, color);
+        len -= 2;
+    } while(len != 0);
 }
 
+void DaliDigit::draw_row(CompositeGraphics &g, char c1, char c2, uint8_t blend, uint16_t row, int &x, int y, uint8_t color) {
+    const dali_digit_t *digit_1 = getDigitInfo(c1);
+    const dali_digit_t *digit_2 = getDigitInfo(c2);
+    uint8_t start[4]   = {0,0,0,0};
+    uint8_t final[4]   = {0,0,0,0};
+    uint8_t blended[4] = {0,0,0,0};
+    if(row < digit_1->height) memcpy(start, digit_1->packed_rle + row * 4, 4);
+    if(row < digit_2->height) memcpy(final, digit_2->packed_rle + row * 4, 4);
+    blend_rle(start, final, blended, blend);
+    unpack_rle_to_graphics(g, blended, x, y, color);
+    x += max(digit_1->width, digit_2->width);
+}
 
+void DaliDigit::draw_row(CompositeGraphics &g, char *str1, char *str2, uint8_t blend, uint16_t row, int x, int y, uint8_t color) {
+    while(*str1 && *str2)
+        draw_row(g, *str1++, *str2++, blend, row, x, y, color);
+}
 
+void DaliDigit::draw(CompositeGraphics &g, char *str1, char *str2, uint8_t blend, int x, int y, uint8_t color) {
+    for(uint16_t _row = 0; _row <= getDigitInfo('0')->height; _row++)
+        draw_row(g, str1, str2, blend, _row, x, y++, color);
+}
