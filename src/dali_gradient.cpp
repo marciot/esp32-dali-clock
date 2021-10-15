@@ -16,7 +16,7 @@
  ****************************************************************************/
 
 #include <Arduino.h>
-#include "../dali_config.h"
+#include "dali_constants.h"
 #include "gfx/CompositeGraphics.h"
 #include "dali_gradient.h"
 

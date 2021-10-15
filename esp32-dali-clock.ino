@@ -34,7 +34,8 @@
 #include "src/gfx/Font.h"
 #include "src/gfx/font6x8.h"
 
-#include "dali_config.h"
+#include "src/dali_constants.h"
+#include "src/dali_config.h"
 #include "src/dali_color_theme.h"
 #include "src/dali_digit.h"
 #include "src/dali_clock.h"
@@ -53,6 +54,7 @@ CompositeColorOutput composite(CompositeColorOutput::NTSC);
 
 Font<CompositeGraphics> font(6, 8, font6x8::pixels);
 
+DaliConfig config;
 DaliStatus info;
 DaliClock dali;
 DaliStars stars;
@@ -61,17 +63,15 @@ DaliSun sun;
 DaliGrid grid;
 DaliCity city;
 DaliSparkle sparkle[num_sparkles];
+DaliColorTheme theme;
 
 WebServer server(80);
 DNSServer dnsServer;
 
 #include <soc/rtc.h>
 
-int timezone;
-bool time_dst;
-
-void get_network_time(String ntpServer) {
-    configTime(timezone * 3600, time_dst ? 3600 : 0, ntpServer.c_str());
+void get_network_time(String ntpServer, int timezone, bool dst) {
+    configTime(timezone * 3600, dst, ntpServer.c_str());
 }
 
 void setup() {
@@ -119,8 +119,8 @@ void draw() {
 
     //finished drawing, swap back and front buffer to display it
     graphics.end();
-    
-    DaliColorTheme::setTheme(float(millis() % 240000)/60000);
+
+    theme.update(dali.get_day_elapsed());
 }
 
 void loop() {
@@ -137,9 +137,9 @@ void monitorTouch() {
     dali.set_calender_mode(reading < smoothed*0.8);
 }
 
+
 /********************************* WEB SERVER *********************************/
 constexpr char *ap_ssid = "ESP32 Dali Clock";
-constexpr char *configPath = "/config.txt";
 constexpr uint32_t wifiTimeout = 10000;
 constexpr char * webpage_main = R"rawliteral(
 <!DOCTYPE html>
@@ -156,6 +156,20 @@ constexpr char * webpage_main = R"rawliteral(
     </head>
     <body>
         <h1>ESP32 Dali Clock</h1>
+        <form action="/config_prefs" method="get">
+            <h2>Clock Preferences</h2>
+            <div><label for="theme_id">Color Theme:</label>
+            <select id="theme_id" name="theme_id">
+                <option value="99">Time-of-Day Blend</option>
+                <option value="98">Minute Blend</option>
+                <option value="0">Night Theme Only</option>
+                <option value="1">Dawn Theme Only</option>
+                <option value="2">Day Theme Only</option>
+                <option value="3">Dusk Theme Only</option>
+            </select></div>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
         <form action="/config_time" method="get">
             <h2>Manual Time Selection</h2>
             <div><label for="datetime-local">Time:</label>
@@ -239,29 +253,21 @@ void wifi_start() {
 }
 
 bool connectToWirelessAccessPoint() {
-    // If a configuration file exists, connect to the indicated wireless network
+    // Read the configuration file if it exists
+
     if(!SPIFFS.begin(true)) return false;
-    File file = SPIFFS.open(configPath, FILE_READ);
-    if (!file) return false;
-    String ssid     = file.readStringUntil('\n');
-    String pass     = file.readStringUntil('\n');
-    String ntp_addr = file.readStringUntil('\n');
-    time_dst = file.readStringUntil('\n').startsWith("on");
-    timezone = file.readStringUntil('\n').toFloat();
-    ssid.trim();
-    pass.trim();
-    ntp_addr.trim();
-    if(ssid.length() == 0) return false;
-    info.set("Connecting to " + ssid + "...");
-    WiFi.begin(ssid.c_str(), pass.c_str());
+    if(!config.load()) return false;
+    theme.setTheme(config.theme_id);
+    if(config.net_ssid.length() == 0) return false;
+    info.set("Connecting to " + config.net_ssid + "...");
+    WiFi.begin(config.net_ssid.c_str(), config.net_pass.c_str());
     const uint32_t start = millis();
     while (WiFi.status() != WL_CONNECTED) {
       delay(500);
       if(millis() - start > wifiTimeout) return false;
     }
-    info.set("Getting time from " + ntp_addr + "...");
-    get_network_time(ntp_addr);
-    dali.sync_from_rtc();
+    info.set("Getting time from " + config.ntp_addr + "...");
+    configTime(config.timezone * 3600, config.time_dst ? 3600 : 0, config.ntp_addr.c_str());
     delay(1000);
     return true;
 }
@@ -283,26 +289,29 @@ void wifi_task(void* arg) {
             info.set(String("Go to http://") + WiFi.localIP().toString() + " to reconfigure");
 
         // Start web server
+        server.on("/config_prefs", HTTP_GET, [](){
+            server.send(200, "text/html", webpage_ok);
+            config.set("theme_id", server.arg("theme_id"));
+            config.save();
+            theme.setTheme(config.theme_id);
+        });
         server.on("/config_wifi", HTTP_GET, [](){
             server.send(200, "text/html", webpage_ok);
-            // Write a configuration file
-            File file = SPIFFS.open(configPath, FILE_WRITE);
-            file.println(server.arg("net_ssid"));
-            file.println(server.arg("net_pass"));
-            file.println(server.arg("ntp_addr"));
-            file.println(server.arg("time_dst"));
-            file.println(server.arg("timezone"));
-            file.close();
+            config.set("net_ssid", server.arg("net_ssid"));
+            config.set("net_pass", server.arg("net_pass"));
+            config.set("ntp_addr", server.arg("ntp_addr"));
+            config.set("time_dst", server.arg("time_dst"));
+            config.set("timezone", server.arg("timezone"));
+            config.save();
             info.set("Rebooting...");
             delay(2000);
             ESP.restart();
         });
         server.on("/config_time", HTTP_GET, [](){
             server.send(200, "text/html", webpage_ok);
-            // Write a configuration file
             String str = server.arg("datetime-local");
-            dali.set_date (str.substring(5,7).toInt(), str.substring(8,10).toInt(), str.substring(0,4).toInt());
-            dali.set_time (str.substring(11,13).toInt(), str.substring(14,16).toInt(), str.substring(17,19).toInt());
+            dali.set_date(str.substring( 5, 7).toInt(), str.substring( 8,10).toInt(), str.substring( 0, 4).toInt());
+            dali.set_time(str.substring(11,13).toInt(), str.substring(14,16).toInt(), str.substring(17,19).toInt());
         });
         server.onNotFound([](){
             server.send(200, "text/html", webpage_main);

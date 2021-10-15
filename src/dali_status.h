@@ -35,7 +35,7 @@ class DaliStatus {
                 }
             }
         }
-        
+
         void unfade() {
             color = darkBackground() ? 0x0F : 0x00;
         }
@@ -45,7 +45,7 @@ class DaliStatus {
             unfade();
             lastUpdate = millis();
         }
-        
+
         void append(String str) {
             message += str;
             unfade();
@@ -53,7 +53,7 @@ class DaliStatus {
         }
 
         void draw(CompositeGraphics &g) {
-            if(color) {
+            if(color != background_color) {
                 //setting text color, transparent background
                 g.setTextColor(color);
                 //text starting position

@@ -20,7 +20,7 @@
 #include <sys/time.h>
 
 #include "gfx/CompositeGraphics.h"
-#include "../dali_config.h"
+#include "dali_constants.h"
 #include "dali_color_theme.h"
 #include "dali_gradient.h"
 #include "dali_digit.h"
@@ -71,7 +71,7 @@ void DaliClock::draw_gradient_and_shine(CompositeGraphics &g, float i) {
 
 void DaliClock::draw(CompositeGraphics &g) {
     constexpr uint16_t blend_time_ms = 250;
-    
+
     uint32_t elapsed = millis() - last_change_ms;
     if (elapsed > 1000) {
         last_change_ms = millis();
@@ -79,9 +79,9 @@ void DaliClock::draw(CompositeGraphics &g) {
         time_to_digits();
         elapsed = millis() - last_change_ms;
     }
-    
+
     const uint8_t blend = min(255u, elapsed * 255 / blend_time_ms);
-    
+
     // Draw the display
     DaliDigit::draw(g, old_display, new_display, blend, left_margin + 2, digit_top + 2, digit_shadow_color); // Draw the shadow
     DaliDigit::draw(g, old_display, new_display, blend, left_margin    , digit_top    , masking_color     ); // Draw the digit
@@ -115,16 +115,16 @@ void DaliClock::mdy_to_str(uint8_t month, uint8_t day, uint8_t year, char str[9]
 
 void DaliClock::time_to_digits() {
     timeval rawtime;
-    
+
     if(!gettimeofday(&rawtime, nullptr)) {
         // Sync our transitions to real time
-        
+
         if (rawtime.tv_usec > 100000)
             last_change_ms -= 100;
-        
+
         // Swap the displays
         memcpy(old_display, new_display, 8);
-    
+
         /* In order to animate the time correctly, we need to add one second
          * to the current time. We do some non-standard's compliant math here,
          * but it works on the ESP32
@@ -135,5 +135,8 @@ void DaliClock::time_to_digits() {
             mdy_to_str(t->tm_mon+1, t->tm_mday, t->tm_year % 100, new_display);
         else
             hms_to_str(t->tm_hour, t->tm_min, t->tm_sec, new_display);
+
+        // Keep a fractionary number corresponding to how much of the day has elapsed
+        day_elapsed = float(t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec) / 86400;
     }
 }

@@ -105,7 +105,20 @@ extern char floor_gradient_bottom;
 extern char city_hue;
 
 class DaliColorTheme {
+    private:
+        uint8_t theme;
         static char swapColors(char);
     public:
-        static void setTheme(float);
+        enum {
+            NightColors = 0,
+            DawnColors  = 1,
+            DayColors   = 2,
+            DuskColors  = 3,
+            MinuteCycle = 98,
+            DayCycle    = 99
+        };
+
+        void applyBlendedTheme(float);
+        void setTheme(uint8_t id) {theme = id;}
+        void update(float dayElapsed);
 };

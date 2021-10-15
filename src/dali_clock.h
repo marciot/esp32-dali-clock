@@ -22,7 +22,9 @@ class DaliClock {
         bool calendar_mode;
         uint32_t last_change_ms;
         time_t   offset_time;
-        
+
+        float day_elapsed;
+
         char old_display[9];
         char new_display[9];
 
@@ -39,6 +41,8 @@ class DaliClock {
         void set_date(uint8_t month, uint8_t day, uint16_t year);
 
         void set_calender_mode(bool enable);
+
+        float get_day_elapsed() {return day_elapsed;};
 };
 
 #define CLOCK_RECT      left_margin, digit_top, clock_width, digit_height
