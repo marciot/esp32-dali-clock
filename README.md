@@ -1,3 +1,5 @@
+![Dali Clock Animation][animation]
+
 esp32-dali-clock
 ================
 
@@ -73,3 +75,4 @@ if you attribute me. Keep the spirit alive :-)
 [esp_8_bit]: https://github.com/rossumur/esp_8_bit
 [ESP32CompositeVideo]: https://github.com/bitluni/ESP32CompositeVideo
 [ESP32CompositeColorVideo]: https://github.com/marciot/ESP32CompositeColorVideo
+[animation]: https://github.com/marciot/esp32-dali-clock/raw/master/artwork/animation.gif "Dali Clock Animation"
