@@ -23,6 +23,14 @@ This project includes modified code from rossumur's [esp_8_bit]
 and bitluni's [ESP32CompositeVideo]. These changes are also
 available in my standalone project [ESP32CompositeColorVideo].
 
+## Wiring for an [Adafruit HUZZAH32]:
+
+![Dali Clock Wiring][wiring]
+
+1. Use an alligator clip to connect the pin labeled "GND" on the [Adafruit HUZZAH32] to the outside barrel of the RCA plug
+2. Use an alligator clip to connect the pin labeled "A1/DAC1" on the [Adafruit HUZZAH32] to the central pin of the RCA plug
+3. Connect the other end of the RCA cable to the yellow jack on your TV or monitor
+
 ## License (esp32-dali-clock)
 
 ```
@@ -93,3 +101,5 @@ if you attribute me. Keep the spirit alive :-)
 [ESP32CompositeColorVideo]: https://github.com/marciot/ESP32CompositeColorVideo
 [animation]: https://github.com/marciot/esp32-dali-clock/raw/master/artwork/animation.gif "Dali Clock Animation"
 [mini-tv]: https://github.com/marciot/esp32-dali-clock/raw/master/artwork/mini_tv.jpg "Dali Clock on an Analog TV"
+[wiring]: https://github.com/marciot/esp32-dali-clock/raw/master/artwork/wiring.jpg "Dali Clock Wiring"
+[Adafruit HUZZAH32]: https://www.adafruit.com/product/3405
