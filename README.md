@@ -4,7 +4,8 @@ esp32-dali-clock
 ================
 
 This is an ESP32 recreation of the "Dali" digital clock where the
-digits "melt" into one another.
+digits "melt" into one another. Watch a full demonstration on
+[YouTube]
 
 The Dali clock was first written in 1979 by Steve Capps for the
 Xerox Alto and later ported to the Macintosh. Later, Jamie
@@ -15,8 +16,8 @@ implementation does not share any code with that version.
 This project is a follow up to my earlier project, the
 [arduino-dali-clock], but instead of driving a TFT panel, it
 generates composite video output for any NTSC or PAL television or
-monitor. Putting it toghether is ridiculously simple, requiring
-only two wires. All configuration is done via a web interface and
+monitor. Putting it together is ridiculously simple, requiring
+only two wires. All configuration is done via a web interface [YouTube] and
 clock's time is synchronized via the Internet.
 
 This project includes modified code from rossumur's [esp_8_bit]
@@ -103,3 +104,4 @@ if you attribute me. Keep the spirit alive :-)
 [mini-tv]: https://github.com/marciot/esp32-dali-clock/raw/master/artwork/mini_tv.jpg "Dali Clock on an Analog TV"
 [wiring]: https://github.com/marciot/esp32-dali-clock/raw/master/artwork/wiring.jpg "Dali Clock Wiring"
 [Adafruit HUZZAH32]: https://www.adafruit.com/product/3405
+[YouTube]: https://www.youtube.com/watch?v=xGliOsGXlng&t=14s
