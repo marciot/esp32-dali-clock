@@ -8,7 +8,9 @@ digits "melt" into one another. Watch a full demonstration on
 [YouTube]
 
 The Dali clock was first written in 1979 by Steve Capps for the
-Xerox Alto and later ported to the Macintosh. Later, Jamie
+Xerox Alto and later ported to the Macintosh (see [xdaliclock]
+for the full history, including a link to a super trippy film
+from the 1974s that inspired this whole madness). Later, Jamie
 Zawinski re-implemented an X Windows version called [xdaliclock].
 I began with the ".xbm" font files from Jamie's work, but my
 implementation does not share any code with that version.
@@ -22,7 +24,8 @@ clock's time is synchronized via the Internet.
 
 This project includes modified code from rossumur's [esp_8_bit]
 and bitluni's [ESP32CompositeVideo]. These changes are also
-available in my standalone project [ESP32CompositeColorVideo].
+available in my standalone project [ESP32CompositeColorVideo],
+which also includes a write up on what bits I borrowed from where.
 
 ## Wiring for an [Adafruit HUZZAH32]:
 
@@ -53,6 +56,7 @@ location: <http://www.gnu.org/licenses/>.
 
 ## License ([xdaliclock])
 
+```
 xdaliclock - a melting digital clock
 Copyright (c) 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1999, 2001, 2006
  Jamie Zawinski <jwz@jwz.org>
@@ -64,6 +68,7 @@ copyright notice and this permission notice appear in supporting
 documentation.  No representations are made about the suitability of this
 software for any purpose.  It is provided "as is" without express or
 implied warranty.
+```
  
 ## License ([esp_8_bit])
 
