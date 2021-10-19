@@ -29,6 +29,8 @@
 
 #include "esp_pm.h"
 
+#define USE_ATARI_COLORS
+
 #include "src/gfx/CompositeGraphics.h"
 #include "src/gfx/CompositeColorOutput.h"
 #include "src/gfx/Font.h"

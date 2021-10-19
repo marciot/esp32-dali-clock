@@ -6,9 +6,9 @@ class TriangleTree
   int z;  
   TriangleTree<Graphics> *left, *right;
   int depth;
-  char color;
+  Color color;
 
-  void set(short *v0, short *v1, short *v2, char color)
+  void set(short *v0, short *v1, short *v2, Color color)
   {
     v[0] = v0;
     v[1] = v1;

@@ -1,4 +1,5 @@
 #pragma once
+#include "Color.h"
 #include "Font.h"
 #include "TriangleTree.h"
 
@@ -18,6 +19,8 @@ class CompositeGraphics
   TriangleTree<CompositeGraphics> *triangleRoot;
   int trinagleBufferSize;
   int triangleCount;
+
+  inline void setHue(char hue) {Color::setHue(hue);}
 
   CompositeGraphics(int w, int h, int initialTrinagleBufferSize = 0)
     :xres(w), 
@@ -106,26 +109,26 @@ class CompositeGraphics
     if(clear > -1)
       for(int y = 0; y < yres; y++)
         for(int x = 0; x < xres; x++)
-          backbuffer[y][x] = clear;
+          backbuffer[y][x] = Color(clear);
     triangleCount = 0;
     triangleRoot = 0;
   }
 
-  inline void dotFast(int x, int y, char color)
+  inline void dotFast(int x, int y, Color color)
   {
     backbuffer[y][x] = color;
   }
   
-  inline void dot(int x, int y, char color)
+  inline void dot(int x, int y, Color color)
   {
     if((unsigned int)x < xres && (unsigned int)y < yres)
       backbuffer[y][x] = color;
   }
   
-  inline void dotAdd(int x, int y, char color)
+  inline void dotAdd(int x, int y, Color color)
   {
     if((unsigned int)x < xres && (unsigned int)y < yres)
-      backbuffer[y][x] = min(54, color + backbuffer[y][x]);
+      backbuffer[y][x] = color + backbuffer[y][x];
   }
   
   inline char get(int x, int y)
@@ -135,7 +138,7 @@ class CompositeGraphics
     return 0;
   }
     
-  inline void xLine(int x0, int x1, int y, char color)
+  inline void xLine(int x0, int x1, int y, Color color)
   {
     if(x0 > x1)
     {
@@ -149,7 +152,7 @@ class CompositeGraphics
       dotFast(x, y, color);
   }
 
-  void enqueueTriangle(short *v0, short *v1, short *v2, char color)
+  void enqueueTriangle(short *v0, short *v1, short *v2, Color color)
   {
     if(triangleCount >= trinagleBufferSize) return;
     TriangleTree<CompositeGraphics> &t = triangleBuffer[triangleCount++];
@@ -160,7 +163,7 @@ class CompositeGraphics
       triangleRoot = &t;
   }
 
-  void triangle(short *v0, short *v1, short *v2, char color)
+  void triangle(short *v0, short *v1, short *v2, Color color)
   {
     short *v[3] = {v0, v1, v2};
     if(v[1][1] < v[0][1])
@@ -205,7 +208,7 @@ class CompositeGraphics
     }
   }
   
-  void line(int x1, int y1, int x2, int y2, char color)
+  void line(int x1, int y1, int x2, int y2, Color color)
   {
     int x, y, xe, ye;
     int dx = x2 - x1;
@@ -303,7 +306,7 @@ class CompositeGraphics
     frame = b;    
   }
 
-  void fillRect(int x, int y, int w, int h, int color)
+  void fillRect(int x, int y, int w, int h, Color color)
   {
     if(x < 0)
     {
@@ -324,7 +327,7 @@ class CompositeGraphics
         dotFast(i, j, color);
   }
 
-  void rect(int x, int y, int w, int h, int color)
+  void rect(int x, int y, int w, int h, Color color)
   {
     fillRect(x, y, w, 1, color);
     fillRect(x, y, 1, h, color);

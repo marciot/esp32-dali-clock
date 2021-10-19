@@ -15,6 +15,8 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
+#define USE_ATARI_COLORS
+
 #include <Arduino.h>
 #include "gfx/CompositeGraphics.h"
 #include "dali_constants.h"
