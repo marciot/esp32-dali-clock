@@ -280,6 +280,7 @@ bool becomeWirelessAccessPoint() {
     WiFi.softAP(ap_ssid);
     delay(100);
     dnsServer.start(53, "*", WiFi.softAPIP());
+    return true;
 }
 
 void wifi_task(void* arg) {
