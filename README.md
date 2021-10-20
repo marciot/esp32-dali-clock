@@ -9,11 +9,11 @@ digits "melt" into one another. Watch a full demonstration on
 
 ## Stretch Goal for Sponsors!
 
-If I get at least 25 GitHub Sponsors for this project, I will
-work on a vaporwave-style of this clock! Watch this helpful
-video [Vaporwave vs Outrun, What's the Difference?] for
-a breakdown of the differences between outrun and vaporwave
-aesthetic!
+:orange_heart: :yellow_heart: :purple_heart: If I get at least 25
+GitHub Sponsors for this project, I will work on a vaporwave-style
+of this clock! Watch this helpful video
+[Vaporwave vs Outrun, What's the Difference?] for a breakdown of the differences between outrun and vaporwave
+aesthetic! :heart_eyes:
 
 ## About the project
 
