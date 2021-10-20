@@ -7,6 +7,16 @@ This is an ESP32 recreation of the "Dali" digital clock where the
 digits "melt" into one another. Watch a full demonstration on
 [YouTube]
 
+## Stretch Goal for Sponsors!
+
+If I get at least 25 GitHub Sponsors for this project, I will
+work on a vaporwave-style of this clock! Watch this helpful
+video [Vaporwave vs Outrun, What's the Difference?] for
+a breakdown of the differences between outrun and vaporwave
+aesthetic!
+
+## About the project
+
 The Dali clock was first written in 1979 by Steve Capps for the
 Xerox Alto and later ported to the Macintosh (see [xdaliclock]
 for the full history, including a link to a super trippy film
@@ -110,3 +120,4 @@ if you attribute me. Keep the spirit alive :-)
 [wiring]: https://github.com/marciot/esp32-dali-clock/raw/master/artwork/wiring.jpg "Dali Clock Wiring"
 [Adafruit HUZZAH32]: https://www.adafruit.com/product/3405
 [YouTube]: https://www.youtube.com/watch?v=xGliOsGXlng&t=14s
+[Vaporwave vs Outrun, What's the Difference?]: https://youtu.be/qGodWY9vZN8
