@@ -71,7 +71,7 @@ int _pal_ = 0;
 // Color palettes
 //
 
-const uint32_t atari_palette_rgb[256] = {
+const static uint32_t atari_palette_rgb[256] = {
     0x00000000,0x000F0F0F,0x001B1B1B,0x00272727,0x00333333,0x00414141,0x004F4F4F,0x005E5E5E,
     0x00686868,0x00787878,0x00898989,0x009A9A9A,0x00ABABAB,0x00BFBFBF,0x00D3D3D3,0x00EAEAEA,
     0x00001600,0x000F2100,0x001A2D00,0x00273900,0x00334500,0x00405300,0x004F6100,0x005D7000,
@@ -107,7 +107,7 @@ const uint32_t atari_palette_rgb[256] = {
 };
 
 // swizzed ntsc palette in RAM
-const uint32_t atari_4_phase_ntsc[256] = {
+const static DRAM_ATTR uint32_t atari_4_phase_ntsc[256] = {
     0x18181818,0x1A1A1A1A,0x1C1C1C1C,0x1F1F1F1F,0x21212121,0x24242424,0x27272727,0x2A2A2A2A,
     0x2D2D2D2D,0x30303030,0x34343434,0x38383838,0x3B3B3B3B,0x40404040,0x44444444,0x49494949,
     0x1A15210E,0x1C182410,0x1E1A2612,0x211D2915,0x231F2B18,0x26222E1A,0x2925311D,0x2C283420,
@@ -141,9 +141,8 @@ const uint32_t atari_4_phase_ntsc[256] = {
     0x131C200F,0x151F2311,0x17212513,0x1A242816,0x1D262A19,0x1F292D1B,0x222C301E,0x252F3321,
     0x28323624,0x2C353928,0x2F393D2B,0x333C402F,0x37404433,0x3B444837,0x3F494D3B,0x444D5140,
 };
-uint32_t *atari_4_phase_ntsc_ram = 0;
 
-const uint32_t atari_4_phase_pal[] = {
+const static DRAM_ATTR uint32_t atari_4_phase_pal[] = {
     0x18181818,0x1B1B1B1B,0x1E1E1E1E,0x21212121,0x25252525,0x28282828,0x2B2B2B2B,0x2E2E2E2E,
     0x32323232,0x35353535,0x38383838,0x3B3B3B3B,0x3F3F3F3F,0x42424242,0x45454545,0x49494949,
     0x16271A09,0x192A1D0C,0x1C2D200F,0x1F302312,0x23342716,0x26372A19,0x293A2D1C,0x2C3D301F,
@@ -210,23 +209,9 @@ const uint32_t atari_4_phase_pal[] = {
     0x1E26120A,0x2129150D,0x242C1810,0x272F1B13,0x2B331F17,0x2E36221A,0x3139251D,0x343C2820,
     0x38402C24,0x3B432F27,0x3E46322A,0x4149352D,0x454D3931,0x48503C34,0x4B533F37,0x4F57433B,
 };
-uint32_t *atari_4_phase_pal_ram = 0;
 
-const uint32_t* ntsc_palette() {
-  if (!atari_4_phase_ntsc_ram) {
-        atari_4_phase_ntsc_ram = new uint32_t[256];
-        memcpy(atari_4_phase_ntsc_ram,atari_4_phase_ntsc,256*4);  // copy into ram as we are tight on static mem
-  }
-  return atari_4_phase_ntsc_ram;
-};
-
-const uint32_t* pal_palette() {
-    if (!atari_4_phase_pal_ram) {
-        atari_4_phase_pal_ram = new uint32_t[512];
-        memcpy(atari_4_phase_pal_ram,atari_4_phase_pal,512*4);  // copy into ram as we are tight on static mem
-    }
-    return atari_4_phase_pal_ram;
- }
+const uint32_t* ntsc_palette() {return atari_4_phase_ntsc;};
+const uint32_t* pal_palette() {return atari_4_phase_pal;}
 
 //====================================================================================================
 //====================================================================================================
