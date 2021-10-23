@@ -891,7 +891,7 @@ void IRAM_ATTR video_isr(volatile void* vbuf)
                 burst(buf);
                 blit(_lines[i-32],buf + _active_start);
             } else if (i < 304) {                   // post render/black 272-304
-                if (i < 272)                        // slight optimization here, once you have 2 blanking buffers
+                if (i < 274)                        // slight optimization here, once you have 2 blanking buffers
                     blanking(buf,false);
             } else {
                 pal_sync(buf,i);                    // 8 lines of sync 304-312
