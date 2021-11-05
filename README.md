@@ -18,35 +18,50 @@ the differences between outrun and vaporwave aesthetic! :heart_eyes:
 ## About the project
 
 The Dali clock was first written in 1979 by Steve Capps for the
-Xerox Alto and later ported to the Macintosh (see [xdaliclock]
-for the full history, including a link to a super trippy film
-from the 1974s that inspired this whole madness). Later, Jamie
-Zawinski re-implemented an X Windows version called [xdaliclock].
-I began with the ".xbm" font files from Jamie's work, but my
-implementation does not share any code with that version.
+Xerox Alto and later ported to the Macintosh. Later, Jamie Zawinski
+re-implemented an X Windows version called [xdaliclock]. Jamie's page
+has a full write up of the history, including a link to a super
+trippy film from the 1974s that inspired the clock.
+
+My re-interpretation of the Dali clock includes colorful retro
+graphics and outputs composite video output for any NTSC or PAL
+television or monitor. Putting it together is ridiculously simple,
+requiring only two wires. All configuration is done via a web
+interface [YouTube] and clock's time is synchronized via the Internet.
+
+<details>
+<summary>More details</summary></br>
 
 This project is a follow up to my earlier project, the
-[arduino-dali-clock], but instead of driving a TFT panel, it
-generates composite video output for any NTSC or PAL television or
-monitor. Putting it together is ridiculously simple, requiring
-only two wires. All configuration is done via a web interface [YouTube] and
-clock's time is synchronized via the Internet.
+[arduino-dali-clock], which used a TFT panel and an
+external clock module.
 
-This project includes modified code from rossumur's [esp_8_bit]
-and bitluni's [ESP32CompositeVideo]. These changes are also
-available in my standalone project [ESP32CompositeColorVideo],
+For my clock, I borrowed the ".xbm" font files from Jamie's
+work, but my implementation does not share any code with that
+version.
+
+For video output, this project includes code from rossumur's
+[esp_8_bit] and bitluni's [ESP32CompositeVideo]. These changes
+are also available in my standalone project [ESP32CompositeColorVideo],
 which also includes a write up on what bits I borrowed from where.
 
+</details>
+
 ## Troubleshooting
+
+<details>
+<summary>Click to Expand</summary></br>
 
 **I get an error about the files in "src" not being found:** Make sure you are using
 the latest version of the Arduino IDE. Earlier versions do not support files in the
 "src" directory.
 
+</details>
+
 ## Wiring for an [Adafruit HUZZAH32]:
 
 <details>
-<summary>More details</summary></br>
+<summary>Click to Expand</summary></br>
 
 ![Dali Clock Wiring][wiring]
 
