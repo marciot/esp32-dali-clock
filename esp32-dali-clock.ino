@@ -15,17 +15,18 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
+#define SUPPORT_NTSC 1
+#define SUPPORT_PAL  1
+
+// Pin used for toggling touch mode
+#define CALENDAR_TOUCH_GPIO 4
+
 #include <SPIFFS.h>
 #include <WiFi.h>
 #include <WebServer.h>
 #include <DNSServer.h>
 
 #include "time.h"
-
-#define SUPPORT_NTSC 1
-#define SUPPORT_PAL  0
-
-#define CALENDAR_TOUCH_GPIO 4
 
 #include "esp_pm.h"
 

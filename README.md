@@ -12,8 +12,8 @@ digits "melt" into one another. Watch a full demonstration on
 :orange_heart: :yellow_heart: :purple_heart: If I get at least 25
 GitHub Sponsors for this project, I will work on a vaporwave-style
 of this clock! Watch this helpful video
-[Vaporwave vs Outrun, What's the Difference?] for a breakdown of the differences between outrun and vaporwave
-aesthetic! :heart_eyes:
+[Vaporwave vs Outrun, What's the Difference?] for a breakdown of
+the differences between outrun and vaporwave aesthetic! :heart_eyes:
 
 ## About the project
 
@@ -37,7 +37,16 @@ and bitluni's [ESP32CompositeVideo]. These changes are also
 available in my standalone project [ESP32CompositeColorVideo],
 which also includes a write up on what bits I borrowed from where.
 
+## Troubleshooting
+
+**I get an error about the files in "src" not being found:** Make sure you are using
+the latest version of the Arduino IDE. Earlier versions do not support files in the
+"src" directory.
+
 ## Wiring for an [Adafruit HUZZAH32]:
+
+<details>
+<summary>More details</summary></br>
 
 ![Dali Clock Wiring][wiring]
 
@@ -45,7 +54,42 @@ which also includes a write up on what bits I borrowed from where.
 2. Use an alligator clip to connect the pin labeled "A1/DAC1" on the [Adafruit HUZZAH32] to the central pin of the RCA plug
 3. Connect the other end of the RCA cable to the yellow jack on your TV or monitor
 
-## License (esp32-dali-clock)
+</details>
+
+## Advanced Configuration Options
+
+<details>
+<summary>Click to Expand</summary></br>
+
+**For PAL output**, change the line in "esp32-dali-clock.ino" from:
+
+```
+CompositeColorOutput composite(CompositeColorOutput::NTSC);
+```
+
+To:
+
+```
+CompositeColorOutput composite(CompositeColorOutput::PAL);
+```
+
+**To change the orientation of the screen**, uncomment (remove the leading two
+slashes) from one of the following lines in the file "src/gfx/CompositeGraphics.h"
+
+```
+//#define GFX_UPSIDE_DOWN
+//#define GFX_FLIP_HORIZONTAL
+//#define GFX_FLIP_VERTICAL
+```
+
+</details>
+
+## Licenses
+
+<details>
+<summary>Click to expand</summary>
+
+### ESP32 Dali Clock (marciot)
 
 ```
 DaliClock by (c) 2021 Marcio Teixeira
@@ -64,7 +108,7 @@ To view a copy of the GNU General Public License, go to the following
 location: <http://www.gnu.org/licenses/>.
 ```
 
-## License ([xdaliclock])
+## [xdaliclock] (Jamie Zawinski)
 
 ```
 xdaliclock - a melting digital clock
@@ -80,7 +124,7 @@ software for any purpose.  It is provided "as is" without express or
 implied warranty.
 ```
  
-## License ([esp_8_bit])
+### [esp_8_bit] (rossumur, Peter Barrett)
 
 ```
 Copyright (c) 2020, Peter Barrett
@@ -99,7 +143,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 ```
 
-## License ([ESP32CompositeVideo])
+### [ESP32CompositeVideo] (Bitluni)
 
 ```
 CC0. Do whatever you like with the code but I will be thankfull 
@@ -107,6 +151,8 @@ if you attribute me. Keep the spirit alive :-)
 
 - bitluni
 ```
+
+</details>
 
 ![Dali Clock Mini TV][mini-tv]
 

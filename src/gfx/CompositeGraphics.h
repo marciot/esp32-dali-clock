@@ -3,6 +3,21 @@
 #include "Font.h"
 #include "TriangleTree.h"
 
+// Uncomment the following to change the orientation of the display
+//#define GFX_UPSIDE_DOWN
+//#define GFX_FLIP_HORIZONTAL
+//#define GFX_FLIP_VERTICAL
+
+#if defined(GFX_UPSIDE_DOWN) || (defined(GFX_FLIP_HORIZONTAL) && defined(GFX_FLIP_VERTICAL))
+  #define _BB_PIXEL(X,Y) backbuffer[yres-Y-1][xres-X-1]
+#elif defined(GFX_FLIP_HORIZONTAL)
+  #define _BB_PIXEL(X,Y) backbuffer[Y][xres-X-1]
+#elif defined(GFX_FLIP_VERTICAL)
+  #define _BB_PIXEL(X,Y) backbuffer[yres-Y-1][xres-X-1]
+#else
+  #define _BB_PIXEL(X,Y) backbuffer[Y][X]
+#endif
+
 class CompositeGraphics
 { 
   public:
@@ -109,32 +124,32 @@ class CompositeGraphics
     if(clear > -1)
       for(int y = 0; y < yres; y++)
         for(int x = 0; x < xres; x++)
-          backbuffer[y][x] = Color(clear);
+          _BB_PIXEL(x,y) = Color(clear);
     triangleCount = 0;
     triangleRoot = 0;
   }
 
   inline void dotFast(int x, int y, Color color)
   {
-    backbuffer[y][x] = color;
+    _BB_PIXEL(x,y) = color;
   }
   
   inline void dot(int x, int y, Color color)
   {
     if((unsigned int)x < xres && (unsigned int)y < yres)
-      backbuffer[y][x] = color;
+      _BB_PIXEL(x,y) = color;
   }
   
   inline void dotAdd(int x, int y, Color color)
   {
     if((unsigned int)x < xres && (unsigned int)y < yres)
-      backbuffer[y][x] = color + backbuffer[y][x];
+      _BB_PIXEL(x,y) = color + _BB_PIXEL(x,y);
   }
   
   inline char get(int x, int y)
   {
     if((unsigned int)x < xres && (unsigned int)y < yres)
-      return backbuffer[y][x];
+      return _BB_PIXEL(x,y);
     return 0;
   }
     
