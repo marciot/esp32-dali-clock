@@ -27,6 +27,7 @@
 #include <DNSServer.h>
 
 #include "time.h"
+#include "src/time_zones.h"
 
 #include "esp_pm.h"
 
@@ -72,10 +73,6 @@ WebServer server(80);
 DNSServer dnsServer;
 
 #include <soc/rtc.h>
-
-void get_network_time(String ntpServer, int timezone, bool dst) {
-    configTime(timezone * 3600, dst, ntpServer.c_str());
-}
 
 void setup() {
     //highest clockspeed needed
@@ -144,7 +141,7 @@ void monitorTouch() {
 /********************************* WEB SERVER *********************************/
 constexpr char *ap_ssid = "ESP32 Dali Clock";
 constexpr uint32_t wifiTimeout = 10000;
-constexpr char * webpage_main = R"rawliteral(
+constexpr char * webpage_head = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -189,43 +186,12 @@ constexpr char * webpage_main = R"rawliteral(
             <br>
             <div><label for="ntp_addr">Time Server:</label>
             <input type="text" id="ntp_addr" name="ntp_addr" value="pool.ntp.org"></div>
-            <div><label for="timezone">Time Zone:</label>
-            <select id="timezone" name="timezone">
-                <option value="0.00">GMT</option>
-                <option value="0.00">UTC</option>
-                <option value="1.00">ECT</option>
-                <option value="2.00">EET</option>
-                <option value="2.00">ART</option>
-                <option value="3.00">EAT</option>
-                <option value="3.30">MET</option>
-                <option value="4.00">NET</option>
-                <option value="5.00">PLT</option>
-                <option value="5.30">IST</option>
-                <option value="6.00">BST</option>
-                <option value="7.00">VST</option>
-                <option value="8.00">CTT</option>
-                <option value="9.00">JST</option>
-                <option value="9.30">ACT</option>
-                <option value="10.00">AET</option>
-                <option value="11.00">SST</option>
-                <option value="12.00">NST</option>
-                <option value="-11.00">MIT</option>
-                <option value="-10.00">HST</option>
-                <option value="-9.00">AST</option>
-                <option value="-8.00">PST</option>
-                <option value="-7.00">PNT</option>
-                <option value="-7.00">MST</option>
-                <option value="-6.00">CST</option>
-                <option value="-5.00">EST</option>
-                <option value="-5.00">IET</option>
-                <option value="-4.00">PRT</option>
-                <option value="-3.30">CNT</option>
-                <option value="-3.00">AGT</option>
-                <option value="-3.00">BET</option>
-                <option value="-1.00">CAT</option>
+            <div><label for="location">Location:</label>
+            <select id="location" name="location">
+)rawliteral";
+
+constexpr char * webpage_foot = R"rawliteral(
             </select></div>
-            <div><label for="time_dst">Daylight Savings Time:</label>
-            <input type="checkbox" id="time_dst" name="time_dst"></div>
             <br>
             <input type="submit" value="Submit">
         </form>
@@ -270,7 +236,7 @@ bool connectToWirelessAccessPoint() {
       if(millis() - start > wifiTimeout) return false;
     }
     info.set("Getting time from " + config.ntp_addr + "...");
-    configTime(config.timezone * 3600, config.time_dst ? 3600 : 0, config.ntp_addr.c_str());
+    configTimeWithTZ(getTzByLocation(config.location), config.ntp_addr);
     delay(1000);
     return true;
 }
@@ -301,11 +267,13 @@ void wifi_task(void* arg) {
         });
         server.on("/config_wifi", HTTP_GET, [](){
             server.send(200, "text/html", webpage_ok);
-            config.set("net_ssid", server.arg("net_ssid"));
-            config.set("net_pass", server.arg("net_pass"));
+            if(server.arg("net_ssid") != "") {
+                config.set("net_ssid", server.arg("net_ssid"));
+                config.set("net_pass", server.arg("net_pass"));
+            }
             config.set("ntp_addr", server.arg("ntp_addr"));
             config.set("time_dst", server.arg("time_dst"));
-            config.set("timezone", server.arg("timezone"));
+            config.set("location", server.arg("location"));
             config.save();
             info.set("Rebooting...");
             delay(2000);
@@ -318,7 +286,16 @@ void wifi_task(void* arg) {
             dali.set_time(str.substring(11,13).toInt(), str.substring(14,16).toInt(), str.substring(17,19).toInt());
         });
         server.onNotFound([](){
-            server.send(200, "text/html", webpage_main);
+            // Use chunked send otherwise we run out of memory
+            server.setContentLength(CONTENT_LENGTH_UNKNOWN);
+            server.send(200, "text/html");
+            server.sendContent(webpage_head);
+            for(int i;;i++) {
+                const char *location = getLocation(i);
+                if(!location) break;
+                server.sendContent(String("<option>") + location + "</option>");
+            }
+            server.sendContent(webpage_foot);
         });
         server.begin();
         while(1) {

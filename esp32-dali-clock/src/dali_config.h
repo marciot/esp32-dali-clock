@@ -23,8 +23,7 @@ class DaliConfig {
         String net_ssid;
         String net_pass;
         String ntp_addr;
-        bool   time_dst;
-        int    timezone;
+        String location;
 
     /**
      * If the key exists in the config structure, assign it,
@@ -35,8 +34,7 @@ class DaliConfig {
         else if(key == "net_ssid") net_ssid = val;
         else if(key == "net_pass") net_pass = val;
         else if(key == "ntp_addr") ntp_addr = val;
-        else if(key == "time_dst") time_dst = val == "on";
-        else if(key == "timezone") timezone = val.toInt();
+        else if(key == "location") location = val;
         else return false;
         return true;
     }
@@ -60,8 +58,7 @@ class DaliConfig {
         config.print("net_ssid:"); config.println(net_ssid);
         config.print("net_pass:"); config.println(net_pass);
         config.print("ntp_addr:"); config.println(ntp_addr);
-        config.print("time_dst:"); config.println(time_dst ? "on" : "off");
-        config.print("timezone:"); config.println(timezone);
+        config.print("location:"); config.println(location);
     }
 
     /**
