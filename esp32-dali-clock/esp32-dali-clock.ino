@@ -141,7 +141,7 @@ void monitorTouch() {
 /********************************* WEB SERVER *********************************/
 constexpr char *ap_ssid = "ESP32 Dali Clock";
 constexpr uint32_t wifiTimeout = 10000;
-constexpr char * webpage_head = R"rawliteral(
+constexpr char * webpage = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -149,10 +149,31 @@ constexpr char * webpage_head = R"rawliteral(
         <title>ESP32 Dali Clock</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
-            form {width: max-content;}
-            form div {display: flex; gap: 1em;}
-            label {flex-grow: 1};
+            body {width: max-content;}
+            form div {display: flex; gap: 1em; margin: 0.5em 0;}
+            label {flex-grow: 1}
+            input:not([type = "submit"]), select {
+                min-width: 20em;
+                box-sizing: border-box;
+            }
         </style>
+        <script>
+            // When the user selects a general location from the list,
+            // repopulate it with more specific locations from the server
+            async function onFilterChanged(el) {
+                if(!el.value) return;
+                tz = await fetch("timezones?prefix=" + el.value);
+                tz = await tz.json();
+                el.innerText = "";
+                tz.forEach(x => {
+                    o = document.createElement("option");
+                    o.innerText = x;
+                    el.appendChild(o);
+                })
+                el.name = "timezone";
+                el.removeAttribute("onchange");
+            }
+        </script>
     </head>
     <body>
         <h1>ESP32 Dali Clock</h1>
@@ -187,10 +208,20 @@ constexpr char * webpage_head = R"rawliteral(
             <div><label for="ntp_addr">Time Server:</label>
             <input type="text" id="ntp_addr" name="ntp_addr" value="pool.ntp.org"></div>
             <div><label for="location">Location:</label>
-            <select id="location" name="location">
-)rawliteral";
-
-constexpr char * webpage_foot = R"rawliteral(
+            <select id="location" onchange="onFilterChanged(this)">
+                <option value="">-- none selected --</option>
+                <option>Africa</option>
+                <option>America</option>
+                <option>Asia</option>
+                <option>Antartica</option>
+                <option>Arctic</option>
+                <option>Asia</option>
+                <option>Atlantic</option>
+                <option>Australia</option>
+                <option>Etc</option>
+                <option>Europe</option>
+                <option>Indian</option>
+                <option>Pacific</option>
             </select></div>
             <br>
             <input type="submit" value="Submit">
@@ -285,17 +316,28 @@ void wifi_task(void* arg) {
             dali.set_date(str.substring( 5, 7).toInt(), str.substring( 8,10).toInt(), str.substring( 0, 4).toInt());
             dali.set_time(str.substring(11,13).toInt(), str.substring(14,16).toInt(), str.substring(17,19).toInt());
         });
-        server.onNotFound([](){
+        server.on("/timezones", HTTP_GET, [](){
+            String separator = "";
+            String prefix = server.arg("prefix");
+            String buff = "[\"";
             // Use chunked send otherwise we run out of memory
             server.setContentLength(CONTENT_LENGTH_UNKNOWN);
             server.send(200, "text/html");
-            server.sendContent(webpage_head);
-            for(int i;;i++) {
-                const char *location = getLocation(i);
+            for(int i = 0;;) {
+                const char *location = getLocation(i, prefix.c_str());
                 if(!location) break;
-                server.sendContent(String("<option>") + location + "</option>");
+                buff += separator + location;
+                separator = "\",\n\"";
+                if(buff.length() > 100) {
+                    server.sendContent(buff);
+                    buff = "";
+                }
             }
-            server.sendContent(webpage_foot);
+            buff += "\"]";
+            server.sendContent(buff);
+        });
+        server.onNotFound([](){
+            server.send(200, "text/html", webpage);
         });
         server.begin();
         while(1) {

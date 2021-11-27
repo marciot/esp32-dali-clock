@@ -465,11 +465,19 @@ const char *timezones[] = {
 
 #define N_ELEMENTS(A) (sizeof(A)/sizeof(A[0]))
 
-const char *getLocation(int index) {
-    index *= 2;
-    if (index < N_ELEMENTS(timezones))
-        return timezones[index];
-    return nullptr;
+const char *getLocation(int &index, const char *prefix = 0) {
+    if(index >= N_ELEMENTS(timezones)) return nullptr;
+    if(prefix) {
+        const int len = strlen(prefix);
+        // Skip non-matching locations
+        while(strncmp(timezones[index], prefix, len)) {
+            index += 2;
+            if (index >= N_ELEMENTS(timezones)) return nullptr;
+        }
+    }
+    const char *res = timezones[index];
+    index += 2;
+    return res;
 }
 
 String getTzByLocation(String location) {
