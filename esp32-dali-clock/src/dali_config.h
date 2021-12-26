@@ -15,15 +15,20 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
+#pragma once
+
+#include <SPIFFS.h>
+
 class DaliConfig {
     public:
         static constexpr char *configPath = "/config.txt";
 
-        int    theme_id;
+        int    theme_id = 0;
         String net_ssid;
         String net_pass;
         String ntp_addr;
-        String location;
+        String timezone = "UTC0";
+        bool   mil_time = true;
 
     /**
      * If the key exists in the config structure, assign it,
@@ -31,10 +36,11 @@ class DaliConfig {
      */
     bool set(String key, String val) {
         if(     key == "theme_id") theme_id = val.toInt();
+        else if(key == "mil_time") mil_time = val == "on";
         else if(key == "net_ssid") net_ssid = val;
         else if(key == "net_pass") net_pass = val;
         else if(key == "ntp_addr") ntp_addr = val;
-        else if(key == "location") location = val;
+        else if(key == "timezone") timezone = val;
         else return false;
         return true;
     }
@@ -55,10 +61,11 @@ class DaliConfig {
 
     void dump(Stream &config) {
         config.print("theme_id:"); config.println(theme_id);
+        config.print("mil_time:"); config.println(mil_time ? "on" : "off");
         config.print("net_ssid:"); config.println(net_ssid);
         config.print("net_pass:"); config.println(net_pass);
         config.print("ntp_addr:"); config.println(ntp_addr);
-        config.print("location:"); config.println(location);
+        config.print("timezone:"); config.println(timezone);
     }
 
     /**
@@ -72,7 +79,7 @@ class DaliConfig {
         }
         File config = SPIFFS.open(configPath, FILE_READ);
         if(!config) {
-            Serial.println("config load failed");
+            Serial.println("config load failed. using defaults");
             return false;
         }
         // Pass a line at a time to the "set" routine.

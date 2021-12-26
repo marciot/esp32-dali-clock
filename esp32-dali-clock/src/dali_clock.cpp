@@ -28,7 +28,7 @@
 #include "dali_digit.h"
 #include "dali_clock.h"
 
-DaliClock::DaliClock() {
+DaliClock::DaliClock(DaliConfig &_conf) : config(_conf) {
     offset_time = 1;
     strcpy(old_display,"00:00:00");
     strcpy(new_display,"00:00:00");
@@ -135,8 +135,15 @@ void DaliClock::time_to_digits() {
         struct tm *t = localtime( &next_time );
         if(calendar_mode)
             mdy_to_str(t->tm_mon+1, t->tm_mday, t->tm_year % 100, new_display);
-        else
-            hms_to_str(t->tm_hour, t->tm_min, t->tm_sec, new_display);
+        else {
+            int hour = t->tm_hour;
+            if(!config.mil_time) {
+                // Convert to 12 hour clock
+                hour= hour % 12;
+                if(hour == 0) hour = 12;
+            }
+            hms_to_str(hour, t->tm_min, t->tm_sec, new_display);
+        }
 
         // Keep a fractionary number corresponding to how much of the day has elapsed
         day_elapsed = float(t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec) / 86400;

@@ -17,8 +17,11 @@
 
 #pragma once
 
+#include "dali_config.h"
+
 class DaliClock {
     private:
+        DaliConfig &config;
         bool calendar_mode;
         uint32_t last_change_ms;
         time_t   offset_time;
@@ -32,7 +35,7 @@ class DaliClock {
         void mdy_to_str(uint8_t month, uint8_t day, uint8_t year, char str[8]);
         void time_to_digits();
     public:
-        DaliClock();
+        DaliClock(DaliConfig &);
 
         static void draw_gradient_and_shine(CompositeGraphics &g, float f);
 

@@ -60,7 +60,7 @@ Font<CompositeGraphics> font(6, 8, font6x8::pixels);
 
 DaliConfig config;
 DaliStatus info;
-DaliClock dali;
+DaliClock dali(config);
 DaliStars stars;
 DaliHorizon horizon;
 DaliSun sun;
@@ -195,6 +195,9 @@ constexpr char * webpage = R"rawliteral(
             <h2>Manual Time Selection</h2>
             <div><label for="datetime-local">Time:</label>
             <input type="datetime-local" id="datetime-local" name="datetime-local" step="1"></div>
+            </div>
+            <div><label for="mil_time">Show 24-hour clock:</label>
+            <input type="checkbox" id="mil_time" name="mil_time" checked></div>
             <br>
             <input type="submit" value="Submit">
         </form>
@@ -267,7 +270,13 @@ bool connectToWirelessAccessPoint() {
       if(millis() - start > wifiTimeout) return false;
     }
     info.set("Getting time from " + config.ntp_addr + "...");
-    configTimeWithTZ(getTzByLocation(config.location), config.ntp_addr);
+    Serial.print("Timezone is ");
+    Serial.print(config.timezone);
+    String tz = getTzByLocation(config.timezone);
+    Serial.print(". Setting TZ to ");
+    Serial.print(tz);
+    Serial.println();
+    configTimeWithTZ(tz, config.ntp_addr);
     delay(1000);
     return true;
 }
@@ -304,7 +313,7 @@ void wifi_task(void* arg) {
             }
             config.set("ntp_addr", server.arg("ntp_addr"));
             config.set("time_dst", server.arg("time_dst"));
-            config.set("location", server.arg("location"));
+            config.set("timezone", server.arg("timezone"));
             config.save();
             info.set("Rebooting...");
             delay(2000);
@@ -315,6 +324,7 @@ void wifi_task(void* arg) {
             String str = server.arg("datetime-local");
             dali.set_date(str.substring( 5, 7).toInt(), str.substring( 8,10).toInt(), str.substring( 0, 4).toInt());
             dali.set_time(str.substring(11,13).toInt(), str.substring(14,16).toInt(), str.substring(17,19).toInt());
+            config.set("mil_time", server.arg("mil_time"));
         });
         server.on("/timezones", HTTP_GET, [](){
             String separator = "";
