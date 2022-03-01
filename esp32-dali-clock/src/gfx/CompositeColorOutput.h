@@ -391,10 +391,6 @@ void video_init_hw(int line_width, int samples_per_cc)
     //                   |
     //                   v gnd
 
-    ledcSetup(0,2000000,7);    // 625000 khz is as fast as we go w 7 bits
-    ledcAttachPin(AUDIO_PIN, 0);
-    ledcWrite(0,0);
-
     //  IR input if used
 #ifdef IR_PIN
     pinMode(IR_PIN,INPUT);
@@ -402,6 +398,10 @@ void video_init_hw(int line_width, int samples_per_cc)
 }
 
 #if SUPPORT_AUDIO
+    ledcSetup(0,2000000,7);    // 625000 khz is as fast as we go w 7 bits
+    ledcAttachPin(AUDIO_PIN, 0);
+    ledcWrite(0,0);
+
     // send an audio sample every scanline (15720hz for ntsc, 15600hz for PAL)
     inline void IRAM_ATTR audio_sample(uint8_t s)
     {
