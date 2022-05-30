@@ -26,7 +26,7 @@ class DaliStatus {
         bool darkBackground() {return (background_color & 0x0F) < 8;}
 
         void fade() {
-            if(millis() - lastUpdate > 1000) {
+            if(millis() - lastUpdate > 5000) {
                 lastUpdate = millis();
                 if(darkBackground()) {
                     if (color != 0x00) color--;

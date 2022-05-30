@@ -276,16 +276,17 @@ bool connectToWirelessAccessPoint() {
     Serial.print(". Setting TZ to ");
     Serial.print(tz);
     Serial.println();
-    configTimeWithTZ(tz, config.ntp_addr);
+    configTimeWithTz(tz, config.ntp_addr);
     delay(1000);
     return true;
 }
 
 bool becomeWirelessAccessPoint() {
-    info.set(String("Failed to connect.\nPlease connect to \"") + ap_ssid + "\" to configure");
+    info.set(String("Starting access point \"") + ap_ssid + "\"");
     WiFi.mode(WIFI_AP);
     WiFi.softAP(ap_ssid);
     delay(100);
+    Serial.print(String("Running AP at" ) + ap_ssid + " with IP address " + WiFi.softAPIP().toString());
     dnsServer.start(53, "*", WiFi.softAPIP());
     return true;
 }
@@ -294,7 +295,7 @@ void wifi_task(void* arg) {
     // Either join an AP or become an AP
     if(connectToWirelessAccessPoint() || becomeWirelessAccessPoint()) {
         if (WiFi.getMode() == WIFI_AP)
-            info.set(String("Failed to connect. Please join \"") + ap_ssid + "\" to configure");
+            info.set(String("Join \"") + ap_ssid + "\" and then go to\nhttp://" + WiFi.softAPIP().toString() + " to configure");
         else
             info.set(String("Go to http://") + WiFi.localIP().toString() + " to reconfigure");
 

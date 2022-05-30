@@ -490,7 +490,7 @@ String getTzByLocation(String location) {
 }
 
 // From https://werner.rothschopf.net/microcontroller/202103_arduino_esp32_ntp_en.htm
-void configTimeWithTZ(String tz, String ntp_addr) {
+void configTimeWithTz(String tz, String ntp_addr) {
     #ifdef ARDUINO_ARCH_ESP32
         // ESP32 seems to be a little more complex:
         configTime(0, 0, ntp_addr.c_str()); // 0, 0 because we will use TZ in the next line
