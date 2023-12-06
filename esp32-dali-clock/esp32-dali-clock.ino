@@ -141,7 +141,7 @@ void monitorTouch() {
 /********************************* WEB SERVER *********************************/
 constexpr char *ap_ssid = "ESP32 Dali Clock";
 constexpr uint32_t wifiTimeout = 10000;
-constexpr char * webpage = R"rawliteral(
+constexpr const char * webpage = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -204,7 +204,7 @@ constexpr char * webpage = R"rawliteral(
         <form action="/config_wifi" method="get">
             <h2>Network Configuration</h2>
             <div><label for="net_ssid">Network Name:</label>
-            <input type="text" id="net_ssid" name="net_ssid"></div>
+            <input type="text" id="net_ssid" name="net_ssid" placeholder="Leave blank for AP mode"></div>
             <div><label for="net_pass">Network Password:</label>
             <input type="text" id="net_pass" name="net_pass"></div>
             <br>
@@ -286,7 +286,7 @@ bool becomeWirelessAccessPoint() {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(ap_ssid);
     delay(100);
-    Serial.print(String("Running AP at" ) + ap_ssid + " with IP address " + WiFi.softAPIP().toString());
+    Serial.println(String("Running AP at " ) + ap_ssid + " with IP address " + WiFi.softAPIP().toString());
     dnsServer.start(53, "*", WiFi.softAPIP());
     return true;
 }
@@ -311,6 +311,9 @@ void wifi_task(void* arg) {
             if(server.arg("net_ssid") != "") {
                 config.set("net_ssid", server.arg("net_ssid"));
                 config.set("net_pass", server.arg("net_pass"));
+            } else {
+                config.set("net_ssid", "");
+                config.set("net_pass", "");
             }
             config.set("ntp_addr", server.arg("ntp_addr"));
             config.set("time_dst", server.arg("time_dst"));
@@ -348,6 +351,8 @@ void wifi_task(void* arg) {
             server.sendContent(buff);
         });
         server.onNotFound([](){
+            Serial.print("Request for ");
+            Serial.println(server.uri());
             server.send(200, "text/html", webpage);
         });
         server.begin();

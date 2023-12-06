@@ -44,6 +44,7 @@ class DaliStatus {
             message = str;
             unfade();
             lastUpdate = millis();
+            Serial.println(str);
         }
 
         void append(String str) {
