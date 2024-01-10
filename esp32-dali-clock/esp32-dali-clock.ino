@@ -14,7 +14,7 @@
  *   To view a copy of the GNU General Public License, go to the following  *
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
-
+// Note by NEWY - use esp32 tool chain v1.0.6
 #define SUPPORT_NTSC 1
 #define SUPPORT_PAL  1
 
@@ -252,7 +252,7 @@ constexpr char * webpage_ok = R"rawliteral(
 )rawliteral";
 
 void wifi_start() {
-    xTaskCreatePinnedToCore(wifi_task, "wifi_task", 3*1024, NULL, 0, NULL, 1);
+    xTaskCreatePinnedToCore(wifi_task, "wifi_task", 3*1024, NULL, 0, NULL, 0);
 }
 
 bool connectToWirelessAccessPoint() {
